@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Field Operations: site performance, HSE actions, parts readiness and training requirements from the CaseQuest workbook.">
+  <meta name="color-scheme" content="light">
+  <title>Dashboard | Field Operations</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2324558f'/%3E%3Cpath d='M9 8h15v4H13v4h9v4h-9v6H9z' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="sr-only skip-link" href="#main">Skip to content</a>
+  <div class="shell">
+    <aside class="sidebar">
+      <a href="#dashboard" class="brand"><span class="brand-logo">FO</span><strong>Field Operations</strong></a>
+      <nav id="nav" aria-label="Main navigation"></nav>
+      <div class="profile-bottom"><div class="avatar" id="role-avatar">SV</div><div><label for="role">Role view</label><select id="role"><option>Supervisor</option><option>Technician</option><option>HSE Supervisor</option></select></div></div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar"><h1 id="page-title">Dashboard</h1><div class="top-actions">
+        <select id="site-scope" aria-label="Site"></select>
+        <div class="search-wrap"><span id="search-icon"></span><input id="search" placeholder="Search sites, assets or actions" aria-label="Search sites, assets or actions" autocomplete="off"><div class="search-results" id="search-results" hidden></div></div>
+        <button class="icon-btn" id="details" aria-label="Data source details"></button><button class="btn" id="primary-action" hidden></button>
+      </div></header>
+      <main class="page-content" id="main" tabindex="-1"></main>
+      <footer class="prototype-note"><span>CaseQuest2026Dataset.xlsx</span><span>·</span><span>Workbook snapshot</span><button class="help-link" id="source-details">Source details</button></footer>
+    </div>
+  </div>
+  <dialog id="modal"><div class="modal-head"><h2 id="modal-title"></h2><button class="icon-btn" id="close-modal" aria-label="Close dialog">×</button></div><div class="modal-body" id="modal-body"></div></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="data.js"></script><script src="app.js"></script><script src="interactions.js"></script>
+</body></html>
