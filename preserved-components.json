@@ -1,0 +1,20 @@
+{
+  "comparedWith": "Attached Lone-Mesa-Energy/source/dist",
+  "unchangedFiles": [
+    "styles.css",
+    "analytics-ui.js",
+    "site-assistant.js",
+    "data.js",
+    "analytics-model.js",
+    "app.js",
+    "analytics.css"
+  ],
+  "changedFiles": [
+    "index.html: load HSE module and scoped CSS",
+    "interactions.js: HSE record branch only"
+  ],
+  "newFiles": [
+    "hse-demo.js",
+    "hse-details.css"
+  ]
+}

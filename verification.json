@@ -1,0 +1,32 @@
+{
+  "application": "Lone Mesa Energy",
+  "workbook_sha256": "b4d32ee1935619eec5a7729428e525eb74c44f2d5cd04a0f7e13fe4cd84533b8",
+  "screens": 26,
+  "screen_dimensions": [
+    3200,
+    1800
+  ],
+  "historical_period": "2025",
+  "hse_snapshot": "2026-10-01",
+  "projection_period": "2026-01 through 2026-03",
+  "projection_as_of": "2025-12-31",
+  "checks": {
+    "independent_model_values": 343,
+    "browser_total_values": 126,
+    "chart_views": 8,
+    "roles": 3,
+    "scopes": 7,
+    "page_errors": 0
+  },
+  "source_files": {
+    "analytics-model.js": "936dd829b41bc585cbb63d7b95681a235b14a0839310fdfd4f061732593a32bc",
+    "analytics-ui.js": "a16d836dd5daeb7d9e57e5a10a367b62b85e2bce70e7b14c38fd0e3a2e8f45b4",
+    "analytics.css": "64cd212c46e58fef4f09571d707f2f39ecb68f30cbdf2438c85dbd174fa5fc50",
+    "app.js": "9ba98d4c369fd3aacbf19e039f97ec37465706d424d77da13aa91a6600773a24",
+    "data.js": "d8f60cda4374477b9714f2984416aa8ddcf24651c551cac8218852a7c2c02516",
+    "index.html": "4bb70bfef3c290349fc98d1b6c41a4188f89cf568e57665d36a360cd6795f95f",
+    "interactions.js": "5e85b016e46ec539406b5c48948399d198a3ca486e6a7cf388e4ff921f104aa5",
+    "site-assistant.js": "bb7cd91d5ef739ebdb356ae38c3f532b2a150b996479f1c6ce5dd18218f29ada",
+    "styles.css": "76ea9e316accb4966d97cb03f8009596ea7c8b7b0558ef95cd6692bc18fc7fa5"
+  }
+}

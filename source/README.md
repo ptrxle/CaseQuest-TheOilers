@@ -1,49 +1,62 @@
-# Field Operations
+# Lone Mesa Energy · v4
 
-This version replaces the Arroyo-only interface with all six sites and three distinct role views. Business records are sourced exclusively from CaseQuest2026Dataset.xlsx. The participant PDF is not an input to this version.
+A presentation-ready operations workspace for all six CaseQuest sites. Open **Lone-Mesa-Energy.html** for the offline version, or use the [hosted website](https://arroyo-critical-parts-casequest-2026.milkystork12.chatgpt.site/). Select a role at the lower left and a site at the top; **All sites** is the default.
 
-## Start
+## Dashboard and role views
 
-Open Field-Operations.html for the offline presentation version. The hosted version is https://arroyo-critical-parts-casequest-2026.milkystork12.chatgpt.site/. Its display title is Field Operations; the existing URL is retained.
+The dashboard opens as a chart gallery. Select a card to view its chart, switch chart types, inspect source values, or select another chart using the preview tabs.
 
-Choose a role in the lower-left corner and a site at the top. All sites are included by default. The source workbook is immutable in this interface: filters, search, record details and permitted CSV exports do not change it.
+| Role | Dashboard charts | Other pages and actions |
+|---|---|---|
+| Supervisor | All eight: lost oil, potential/produced oil, contribution loss, downtime stages, site comparison, HSE, reading quality, parts readiness | HSE, Downtime, Parts, Setup & Training, Access & Activity; operational, downtime, parts and setup exports; workbook cost inputs |
+| Technician | HSE, reading quality, parts readiness | Read-only HSE and parts records; training requirements; no financial fields, report exports or Access & Activity |
+| HSE Supervisor | HSE and reading quality | HSE review, Setup & Training, Access & Activity; HSE export; no general operational or financial exports |
 
-## Role views
+Route access, search results, dialogs, exports, chart navigation and assistant actions share these permissions. Changing roles closes restricted dialogs and resets the chart view. These are proposed application permissions, not a claim about the source company's existing controls.
 
-Supervisor: operational dashboard, HSE records, downtime analysis, parts readiness, setup/training and Access & Activity. Operational, downtime, parts and setup exports are available. Workbook cost inputs are visible.
+## Evidence and projections
 
-Technician: equipment dashboard, read-only HSE records, parts readiness and training requirements. No Access & Activity tab, downtime-analysis page, financial fields or exports.
+**CaseQuest2026Dataset.xlsx is the only business-data input.** The participant PDF is not a data source. Operating records cover 2025; HSE status is the October 1, 2026 snapshot. There are six sites, 18 assets, 385 unique events, 216 production rows, 6,570 daily readings and 36 unique HSE observations. Recorded unplanned downtime is 6,598.55 equipment-hours; concurrent asset outages may overlap in clock time.
 
-HSE Supervisor: safety dashboard, HSE review, setup/training and Access & Activity. HSE export is available. General operational and financial exports are unavailable.
+Duplicate export rows are checked before removal. Missing event durations and production potential values are restored only where supported by workbook formulas. Explicit Fahrenheit readings are converted to Celsius. Missing readings and pending invoice values remain unavailable. Site inputs are counted once per site. Record dialogs show source sheet/row references; **workbook-provenance.json** preserves cell references, transformations and reconciliation results.
 
-The route guard, search, detail dialogs and export functions use the same permission rules. A role change closes open dialogs and removes restricted content. Application permissions are a proposed interface design, not evidence that these controls existed in the source company.
+The lost-oil, production, financial and site-comparison views offer **January–March 2026 baseline projections, as of December 31, 2025**. They use 2025 asset-level volume per calendar hour, workbook capacity and fixed historical margins. Projections are derived estimates, not workbook records or current/live data. No growth, intervention benefit or seasonality is assumed. A January–September fit is evaluated against an October–December holdout; only three holdout months are available.
 
-## Data
+**analytics-method.md** documents formulas, assumptions, source rounding, backtests and verified totals. Produced oil already includes recovered oil. Financial charts show modeled contribution, not revenue or demonstrated cash savings. Cause totals and downtime-stage totals describe the same outages and must not be added together.
 
-Operating period: 2025. HSE status: October 1, 2026. Source workbook SHA-256: b4d32ee1935619eec5a7729428e525eb74c44f2d5cd04a0f7e13fe4cd84533b8.
+No invented inventory balances, employees, completion statuses or project-progress records are included. Parts readiness shows recorded spare-fill inputs and parts-wait exposure. Training and configuration figures are workbook requirements/options, not approved budgets or completion evidence.
 
-There are 6 sites, 18 assets, 385 unique events (313 unplanned), 216 monthly production rows, 6,570 daily readings and 36 unique HSE observations. All-site unplanned downtime is 6,598.55 equipment-hours. Equipment-hours can overlap across assets.
+## Local workbook guide
 
-Repeated export rows are removed after checking normalized business IDs and duplicate field equality. Four missing event durations and three production potential values are restored using the workbook's own formulas. Explicit Fahrenheit readings are converted to Celsius. Missing readings and pending invoice values stay unavailable. Site-level inputs are counted once per site, not once per asset. Training hours equal technician count multiplied by source hours per person.
-
-The interface includes source sheet/row details for individual records. workbook-provenance.json includes original values, exact cell references, transformations and reconciliation results. No invented inventory, employee, training-completion, transaction, or project-progress records are included. Parts readiness uses site spare-fill rates and recorded parts-wait events. Configuration cost inputs and O6 training costs are workbook option inputs, not approved project budgets.
+The floating guide answers supported workbook questions, compares sites and navigates to permitted pages/charts. It can apply site filters and initiate exports allowed for the selected role. It uses local rules and workbook calculations; it does not call an LLM or network service. Unsupported questions receive a limitation rather than an invented answer. It cannot change source records or operate equipment.
 
 ## Presentation images
 
-The screens folder has 14 PNGs, each 3200 × 1800 (16:9), covering all pages available to each role. supervisor-* has all six main pages; technician-* has four field views; hse-supervisor-* has four safety views. Use the two role dashboards to explain why each user sees different information.
+The **screens** folder contains 26 PNGs at **3200 × 1800** (16:9):
 
-## Code and refresh
+- Dashboard; lost oil, production and financial views in both current and projection modes.
+- Downtime chart, site comparison, HSE chart, reading quality, parts chart and workbook guide.
+- HSE page, Downtime page, Parts page, Setup & Training and Access & Activity.
+- All four Technician pages and all four HSE Supervisor pages.
 
-source/dist contains editable HTML, CSS and JavaScript. No build or package installation is needed to serve the application. source/scripts contains the workbook extractor and web-data builder. Python 3 with openpyxl is needed only to refresh the data:
+Screenshot filename stems are `dashboard`, `oil-loss-current`, `oil-loss-projection`, `production-current`, `production-projection`, `financial-current`, `financial-projection`, `downtime-chart`, `site-comparison`, `hse-chart`, `data-quality`, `parts-chart`, `chatbot`, `supervisor-hse`, `downtime-page`, `parts-page`, `setup`, `access`, `technician-dashboard`, `hse-supervisor-dashboard`, `technician-hse`, `technician-parts`, `technician-setup`, `hse-supervisor-hse`, `hse-supervisor-setup` and `hse-supervisor-access`.
 
-    python3 scripts/extract_workbook.py /path/to/CaseQuest2026Dataset.xlsx /path/to/extracted
-    python3 scripts/build_webdata.py /path/to/extracted/workbook-data.json dist/data.js
-    python3 -m http.server 8765 --directory dist
+## Source and refresh
 
-Run these commands from the source folder. Review the extraction audit and update the saved offline HTML after a data refresh. No live data endpoint is configured.
+**source/dist** contains editable HTML, CSS and JavaScript. No build or package installation is required to serve it. The analytics additions are `analytics-model.js` (calculations), `analytics-ui.js` (gallery/charts), `analytics.css` (interface styles) and `site-assistant.js` (local guide).
 
-## Validation and production boundary
+The retained scripts in **source/scripts** refresh the workbook export. Python 3 with `openpyxl` is needed only for extraction. Run from the source folder:
 
-Checked all six sites, role navigation, direct restricted URLs, export allowlists, financial fields in dialogs, search filtering, role changes, HSE filters/pagination, source totals, invalid saved-role fallback, keyboard skip navigation and mobile overflow. All 14 image captures fit their slide frame without clipping.
+```sh
+python3 scripts/extract_workbook.py /path/to/CaseQuest2026Dataset.xlsx /path/to/extracted
+python3 scripts/build_webdata.py /path/to/extracted/workbook-data.json dist/data.js
+python3 -m http.server 8765 --directory dist
+```
 
-This is a presentation-ready, read-only application. The browser role selector demonstrates access behavior; it is not secure authentication. All downloaded static data can be inspected by a visitor who already has access to the private site. Genuine production deployment needs identities mapped to roles and server-side authorization, a connected data source with refresh/failure handling, and protected audit storage. No equipment controls, supplier integrations or live telemetry are connected. These cannot be verified from an uploaded workbook alone.
+Review the extraction audit, rerun validation, then regenerate the offline HTML and screenshots after refreshing data. No live endpoint or automatic telemetry feed is configured.
+
+**source/tests** contains the expected analytics fixture and browser QA. Numeric checks cover company/site totals, monthly reconciliations, volume/contribution identities and projections. Browser checks cover role restrictions, direct routes, site filtering, chart controls, exports, guide behavior and screenshot layouts. For browser checks, install the development dependency (`npm install`, `npx playwright install chromium`), start the static server, then run `npm test`. Set `TEST_URL` or `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` if needed. Use the supplied fixture as a regression reference; a changed workbook requires an independently reviewed update.
+
+## Deployment boundary
+
+This package is a read-only presentation application. The role selector demonstrates role-specific views; it is **not authentication**. Static workbook data can be inspected by a visitor with access to the site. Operational deployment requires authenticated identities, server-side authorization, a connected data source with refresh/failure handling, and protected audit storage. No equipment controls, supplier integrations or live telemetry are connected.

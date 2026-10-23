@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "numericChecks": 126,
+  "chartViews": 8,
+  "roles": 3,
+  "scopes": 7,
+  "forecasts": 4,
+  "chatbot": true,
+  "mobile": true,
+  "pageErrors": []
+}

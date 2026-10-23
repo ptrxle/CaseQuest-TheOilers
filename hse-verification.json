@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "dashboardPixelIdentical": true,
+  "workbookUnchanged": true,
+  "sourceTableUnchanged": true,
+  "allCriticalActionsGate": true,
+  "technicianCannotVerify": true,
+  "supervisorNoteRequired": true,
+  "returnForRework": true,
+  "resetAllHSE": true,
+  "persistence": true,
+  "otherDialogsUnchanged": true,
+  "existingFinancialPermissions": true,
+  "mobile": true,
+  "escapedNotes": true,
+  "pageErrors": []
+}
