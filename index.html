@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Lone Mesa Energy: oil production, operational insights, historical baseline projections and a workbook-grounded site assistant.">
+  <meta name="description" content="Lone Mesa Energy: site spare-parts tracking, replenishment requests, operational dashboards and HSE actions.">
   <meta name="color-scheme" content="light">
   <title>Dashboard | Lone Mesa Energy</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2324558f'/%3E%3Cpath d='M9 8h15v4H13v4h9v4h-9v6H9z' fill='white'/%3E%3C/svg%3E">
@@ -673,6 +673,16 @@ button.chart-tile:hover, a.chart-tile:hover, .chart-tile:has(.help-link:hover) {
 @media(prefers-reduced-motion:reduce) { .hse-detail-hold { transition:none; } }
 
 </style>
+  <style>
+/* Spare-parts demo only. Workbook dashboards and HSE styling are unchanged. */
+.sp-workspace{display:grid;gap:18px;min-width:0}.sp-note{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 14px;background:#f8fafc;border:1px solid var(--line);border-radius:8px;color:#7a8ca3;font-size:11px}.sp-note strong{color:#597391;font-weight:500}.sp-note .help-link{font-size:11px;white-space:nowrap}.sp-tabs{display:flex;gap:5px;align-items:center;border-bottom:1px solid var(--line);padding-bottom:10px}.sp-tab{border:1px solid transparent;background:transparent;color:#6c8099;border-radius:7px;padding:8px 14px;min-height:36px;font-size:12px;font-weight:500}.sp-tab.active{background:#e9f0fa;color:#24558f;border-color:#d5e1ef}.sp-tab:hover{background:#eef3f9}.sp-tab .badge{margin-left:5px;font-size:9px;padding:1px 5px}.sp-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px}.sp-toolbar>div{display:flex;align-items:center;gap:9px}.sp-toolbar input{width:240px;height:34px;min-height:34px;font-size:11px}.sp-toolbar select{height:34px;min-height:34px;padding:5px 28px 5px 10px;font-size:11px}.sp-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.sp-actions .btn.small{font-size:10px}.sp-item strong{display:block;font-weight:600}.sp-item small{display:block;margin-top:3px;color:#8796a9;font-size:10px}.sp-muted{color:#8a98aa}.sp-number{text-align:right;font-variant-numeric:tabular-nums}.sp-table td{padding-top:12px;padding-bottom:12px}.sp-table th{font-size:10px}.sp-empty{text-align:center;padding:35px 20px 39px}.sp-empty-icon{display:flex;align-items:center;justify-content:center;width:42px;height:42px;margin:0 auto 14px;background:#eff3f8;border-radius:11px;color:#6c88aa}.sp-empty-icon svg{width:22px;height:22px}.sp-empty h3{font-size:14px;font-weight:600}.sp-empty p{font-size:12px;color:#8795a7;margin:7px 0 17px}.sp-empty .sp-actions{justify-content:center}.sp-pagination{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid var(--line-soft);padding:10px 18px;font-size:11px;color:#8a97a9}.sp-pagination>div{display:flex;gap:7px;align-items:center}.sp-source{background:white;border:1px solid var(--line);border-radius:10px;overflow:hidden}.sp-source summary{cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:14px 18px;font-size:12px;font-weight:500;color:#5f7694;list-style:none}.sp-source summary::-webkit-details-marker{display:none}.sp-source summary::after{content:'+';font-size:17px;font-weight:400;color:#7e94af}.sp-source[open] summary::after{content:'−'}.sp-source summary small{margin-left:auto;color:#96a1b1;font-size:10px;font-weight:400}.sp-source-foot{padding:10px 18px;color:#93a0b1;font-size:10px;line-height:1.5;border-top:1px solid var(--line-soft)}.sp-rule{display:flex;align-items:center;gap:9px;color:#6f839c;font-size:11px}.sp-rule input{width:15px;height:15px;min-height:15px;margin:0;accent-color:#24558f}.sp-rule-note{padding:13px 18px;font-size:11px;color:#8a99ab;border-top:1px solid var(--line-soft);line-height:1.5}.sp-activity{padding:0 18px}.sp-activity-row{display:grid;grid-template-columns:125px minmax(0,1fr);gap:15px;padding:12px 0;border-top:1px solid var(--line-soft);font-size:11px}.sp-activity-row:first-child{border-top:0}.sp-activity-row time{font-size:10px;color:#95a1b2}.sp-activity-row strong{font-weight:500;color:#54708f}.sp-activity-row small{display:block;font-size:10px;color:#8d9db0;margin-top:3px;overflow-wrap:anywhere}
+#modal:has(.sp-dialog){width:min(700px,calc(100vw - 32px));max-height:calc(100dvh - 40px)}.sp-dialog{font-size:12px}.sp-dialog p{font-size:12px;line-height:1.5}.sp-dialog .sp-note{font-size:10px;margin-bottom:17px;padding:9px 12px}.sp-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px}.sp-field{display:grid;gap:6px;color:#607792;font-size:11px;font-weight:500;margin:0}.sp-field.full{grid-column:1/-1}.sp-field input,.sp-field select,.sp-field textarea{width:100%;min-width:0;font-size:12px;min-height:36px}.sp-field textarea{min-height:76px;resize:vertical}.sp-field small{color:#99a5b5;font-size:10px;font-weight:400;line-height:1.4}.sp-form-title{grid-column:1/-1;margin:3px 0 0;padding-top:13px;border-top:1px solid var(--line-soft);font-size:12px;font-weight:600;color:#3e597a}.sp-dialog-footer{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:20px;padding-top:15px;border-top:1px solid var(--line-soft)}.sp-dialog-footer .btn{min-height:36px}.sp-dialog-footer .help-link{margin-right:auto;font-size:11px}.sp-error{color:#ba2869;font-size:11px;line-height:1.5;margin-top:11px}.sp-error:empty{display:none}.sp-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px;margin:0 0 15px}.sp-facts>div{display:grid;grid-template-columns:105px minmax(0,1fr);gap:10px;padding:10px 0;border-bottom:1px solid var(--line-soft)}.sp-facts dt,.sp-facts dd{margin:0;font-size:11px;line-height:1.5;overflow-wrap:anywhere}.sp-facts dt{color:#8a99ad}.sp-facts dd{color:#405a79}.sp-facts .full{grid-column:1/-1}.sp-order-stages{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:18px}.sp-order-stages span{padding:5px 8px;border:1px solid #e0e6ef;border-radius:6px;background:#f8fafc;color:#8c9bb0;font-size:10px}.sp-order-stages span.active{background:#eaf1fb;border-color:#b8cde7;color:#24558f}.sp-order-stages span.complete{background:#f0f7f3;border-color:#d5e7dc;color:#427a59}.sp-order-stages i{font-style:normal;color:#a8b4c5;font-size:10px}.sp-dialog-section{margin:17px 0 12px;padding-top:15px;border-top:1px solid var(--line-soft)}.sp-dialog-section h3{font-size:12px;color:#496482;margin-bottom:10px}.sp-cost-note{font-size:10px;color:#99a5b5;margin-top:5px}.sp-draft-notice{padding:10px 12px;border:1px solid #d8e4f2;background:#f4f8fd;border-radius:7px;color:#6a82a0;font-size:11px;margin-top:13px}.sp-count-change{display:flex;justify-content:space-between;gap:10px;margin:0 0 17px;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:#f9fbfd;color:#7d8fa6;font-size:11px}.sp-count-change strong{font-size:17px;color:#345b89;font-weight:550}.sp-actions .help-link{font-size:11px}
+@media(max-width:900px){.sp-toolbar{flex-wrap:wrap}.sp-toolbar input{width:200px}.sp-source summary small{display:none}.sp-activity-row{grid-template-columns:110px minmax(0,1fr)}}
+@media(max-width:600px){.sp-workspace{gap:15px}.sp-note{align-items:flex-start;flex-wrap:wrap;font-size:10px}.sp-toolbar>div{flex-wrap:wrap;gap:7px}.sp-toolbar{gap:10px}.sp-toolbar input{width:180px}.sp-tab{padding:8px 12px;font-size:11px}.sp-empty{padding:28px 15px}.sp-form{grid-template-columns:1fr;gap:13px}.sp-field.full,.sp-form-title{grid-column:auto}.sp-facts{grid-template-columns:1fr}.sp-facts .full{grid-column:auto}.sp-dialog-footer{flex-wrap:wrap}.sp-dialog-footer .help-link{width:100%;margin-bottom:4px}.sp-activity-row{grid-template-columns:1fr;gap:4px}.sp-source summary{padding:13px 15px}.sp-rule-note{padding:12px 15px}.sp-pagination{padding:10px 15px;font-size:10px}.sp-order-stages{gap:5px}.sp-order-stages span{font-size:9px;padding:5px 6px}}
+
+.sp-source .sp-table td{height:32px;padding-top:6px;padding-bottom:6px}.sp-empty:has(.sp-actions){padding-top:24px;padding-bottom:25px}
+
+</style>
 </head>
 <body>
   <a class="sr-only skip-link" href="#main">Skip to content</a>
@@ -680,12 +690,12 @@ button.chart-tile:hover, a.chart-tile:hover, .chart-tile:has(.help-link:hover) {
     <aside class="sidebar">
       <a href="#dashboard" class="brand" data-dashboard-home><span class="brand-logo">LM</span><strong>Lone Mesa Energy</strong></a>
       <nav id="nav" aria-label="Main navigation"></nav>
-      <div class="profile-bottom"><div class="avatar" id="role-avatar">SV</div><div><label for="role">Role view</label><select id="role"><option>Supervisor</option><option>Technician</option><option>HSE Supervisor</option></select></div></div>
+      <div class="profile-bottom"><div class="avatar" id="role-avatar">SV</div><div><label for="role">Demo role</label><select id="role"><option>Supervisor</option><option>Technician</option><option>HSE Supervisor</option></select></div></div>
     </aside>
     <div class="workspace">
       <header class="topbar"><h1 id="page-title">Dashboard</h1><div class="top-actions">
         <select id="site-scope" aria-label="Site"></select>
-        <div class="search-wrap"><span id="search-icon"></span><input id="search" placeholder="Search sites, assets or actions" aria-label="Search sites, assets or actions" autocomplete="off"><div class="search-results" id="search-results" hidden></div></div>
+        <div class="search-wrap"><span id="search-icon"></span><input id="search" placeholder="Search parts, sites or actions" aria-label="Search parts, sites or actions" autocomplete="off"><div class="search-results" id="search-results" hidden></div></div>
         <button class="icon-btn" id="details" aria-label="Data source details"></button><button class="btn" id="primary-action" hidden></button>
       </div></header>
       <main class="page-content" id="main" tabindex="-1"></main>
@@ -915,11 +925,11 @@ window.WORKBOOK_DATA = {"meta":{"file":"CaseQuest2026Dataset.xlsx","sha256":"b4d
 const DATA = window.WORKBOOK_DATA;
 const ROLES = ['Supervisor','Technician','HSE Supervisor'];
 const PERMISSIONS = Object.freeze({
-  Supervisor: {pages:['dashboard','hse','downtime','parts','setup','access'],exports:['operations','downtime','parts','setup'],finance:true},
-  Technician: {pages:['dashboard','hse','parts','setup'],exports:[],finance:false},
-  'HSE Supervisor': {pages:['dashboard','hse','setup','access'],exports:['hse'],finance:false}
+  Supervisor: {pages:['dashboard','parts','hse'],exports:['operations','parts'],finance:true},
+  Technician: {pages:['dashboard','parts','hse'],exports:[],finance:false},
+  'HSE Supervisor': {pages:['dashboard','parts','hse'],exports:['hse'],finance:false}
 });
-const PAGES = [['dashboard','grid','Dashboard'],['hse','shield','HSE Actions'],['downtime','chart','Downtime'],['parts','box','Parts Readiness'],['setup','book','Setup & Training'],['access','users','Access & Activity']];
+const PAGES = [['dashboard','grid','Dashboard'],['parts','box','Spare Parts'],['hse','shield','HSE Actions']];
 const STAGES = [['detect_hours','Detection'],['dispatch_hours','Dispatch'],['parts_wait_hours','Parts wait'],['repair_hours','Repair'],['restart_hours','Restart']];
 const PATHS={grid:'M3 3h6v6H3z M15 3h6v6h-6z M3 15h6v6H3z M15 15h6v6h-6z',shield:'M12 3l8 3v6c0 5-8 9-8 9s-8-4-8-9V6z M9 12l2 2 4-4',chart:'M4 3v17h17 M8 16v-5 M13 16V6 M18 16V9',box:'M3 7l9-4 9 4v10l-9 4-9-4z M3 7l9 4 9-4 M12 11v10',book:'M12 5C8 2 3 4 3 4v15s5-2 9 1c4-3 9-1 9-1V4s-5-2-9 1z M12 5v15',users:'M16 21v-3c0-3-8-3-8 0v3 M12 4a4 4 0 1 0 0 8 4 4 0 1 0 0-8 M3 18v-2c0-2 2-3 4-3 M21 18v-2c0-2-2-3-4-3',search:'M10 3a7 7 0 1 0 0 14 7 7 0 1 0 0-14 M15 15l6 6',info:'M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18 M12 11v6 M12 7v1',alert:'M12 3L2 21h20z M12 9v5 M12 17v1',check:'M4 12l5 5 11-11',download:'M12 3v12 M7 10l5 5 5-5 M4 17v4h16v-4'};
 const icon=n=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${PATHS[n]||PATHS.grid}"/></svg>`;
@@ -959,19 +969,9 @@ function fieldDashboard(){const a=selectedAssets(),h=openHazards(),sites=selecte
 function safetyDashboard(){const hs=hazards(),open=openHazards(),sites=selectedSites();return meta('HSE snapshot · '+date(DATA.meta.hseAsOf))+stats(stat('Critical open actions',criticalHazards().length,'Severity 5','critical'),stat('Open actions',open.length),stat('Closed actions',hs.filter(h=>h.action_status==='Closed').length),stat('Remediation effort',num(sum(open,'action_person_hours'),0)+' h','Open actions'))+`<div class="grid-main">${panel('HSE by site',table(['Site','Open','Critical','Closed','Action hours'],sites.map(s=>{const h=hs.filter(h=>h.site_id===s.site_id),o=h.filter(h=>h.action_status==='Open');return `<tr><td>${siteButton(s)}</td><td>${o.length}</td><td>${badge(o.filter(h=>h.potential_severity===5).length,o.some(h=>h.potential_severity===5)?'critical':'neutral')}</td><td>${h.filter(h=>h.action_status==='Closed').length}</td><td>${num(sum(o,'action_person_hours'),0)} h</td></tr>`;})))}${panel('Open actions by severity',bars([5,4,3,2,1].map(n=>['Severity '+n,open.filter(h=>h.potential_severity===n).length]),''))}</div>`+panel('Latest safety closures',recentSafety(3),`<a href="#hse">View actions</a>`);}
 function dashboard(){return window.AnalyticsUI.render();}
 function hse(){const h=hazards(),open=openHazards();const filtered=h.filter(h=>(state.hseStatus==='all'||h.action_status===state.hseStatus)&&(state.hseSeverity==='all'||h.potential_severity===Number(state.hseSeverity))).sort((a,b)=>b.potential_severity-a.potential_severity||a.due_date.localeCompare(b.due_date));return meta('HSE snapshot · '+date(DATA.meta.hseAsOf))+stats(stat('Critical open actions',criticalHazards().length,'Severity 5','critical'),stat('Open actions',open.length),stat('Closed actions',h.filter(h=>h.action_status==='Closed').length),stat('Remediation effort',num(sum(open,'action_person_hours'),0)+' h','Open source actions'))+`<div class="tab-controls"><label>Status <select id="hse-status">${['Open','Closed','all'].map(v=>`<option value="${v}" ${state.hseStatus===v?'selected':''}>${v==='all'?'All statuses':v}</option>`).join('')}</select></label><label>Severity <select id="hse-severity"><option value="all">All severities</option>${[5,4,3,2,1].map(v=>`<option value="${v}" ${state.hseSeverity===String(v)?'selected':''}>${v}</option>`).join('')}</select></label><span class="subtle">${state.role==='HSE Supervisor'?'Review source evidence':'Read-only source records'}</span></div>`+panel('Corrective actions',table(['ID / asset','Site','Hazard','Severity','Due date','Status',''],safetyRows(slice(filtered)))+pager(filtered.length));}
-function downtime(){const e=events(),hours=sum(e,'stopped_hours');const causes=[...new Set(e.map(e=>e.cause))].map(c=>[c,sum(e.filter(e=>e.cause===c),'stopped_hours')]).sort((a,b)=>b[1]-a[1]);const sorted=[...e].sort((a,b)=>b.stopped_hours-a.stopped_hours);return meta()+`<div class="tab-controls"><label>Equipment <select id="asset-scope"><option value="all">All equipment</option>${selectedAssets().map(a=>`<option value="${a.asset_id}" ${state.asset===a.asset_id?'selected':''}>${a.asset_id} · ${esc(siteName(a.site_id))}</option>`).join('')}</select></label><span class="subtle">Unplanned events only</span></div>`+stats(stat('Unplanned downtime',num(hours)+' h'),stat('Unplanned events',e.length),stat('Average duration',num(e.length?hours/e.length:0)+' h','Per event'),stat('Parts wait share',num(hours?sum(e,'parts_wait_hours')/hours*100:0)+'%'))+`<div class="grid-two">${panel('Downtime by stage',bars(STAGES.map(([k,l])=>[l,sum(e,k)])))}${panel('Downtime by cause',bars(causes))}</div>`+panel('Longest events',table(['Event','Site','Asset','Cause','Downtime','Parts wait',''],slice(sorted,3).map(e=>`<tr><td>${e.event_id}</td><td>${esc(siteName(e.site_id))}</td><td>${e.asset_id}</td><td>${esc(e.cause)}</td><td>${num(e.stopped_hours)} h</td><td>${num(e.parts_wait_hours)} h</td><td>${viewButton('event',e.event_id)}</td></tr>`))+pager(sorted.length,3));}
-function parts(){const e=events(),parts=e.filter(e=>e.parts_wait_hours>0),sites=selectedSites(),fill=sites.map(s=>s.spare_fill_pct);const range=Math.min(...fill)===Math.max(...fill)?num(fill[0],0):num(Math.min(...fill),0)+'–'+num(Math.max(...fill),0);return meta()+stats(stat('Parts-wait hours',num(sum(e,'parts_wait_hours'))+' h'),stat('Events with parts waits',parts.length,'2025 unplanned events'),stat('Local spare fill',range+'%',sites.length>1?'Range across selected sites':'Site source rate'),stat('Downtime share',num(sum(e,'parts_wait_hours')/sum(e,'stopped_hours')*100)+'%','Parts-wait stage'))+panel('Parts readiness by site',table(['Site','Local spare fill','Parts wait','Affected events','Share of downtime',''],sites.map(s=>{const ev=e.filter(e=>e.site_id===s.site_id);return `<tr><td>${siteButton(s)}</td><td><div class="allocation"><span>${num(s.spare_fill_pct,0)}%</span><div class="progress"><span style="width:${s.spare_fill_pct}%"></span></div></div></td><td>${num(sum(ev,'parts_wait_hours'))} h</td><td>${ev.filter(e=>e.parts_wait_hours>0).length}</td><td>${num(sum(ev,'parts_wait_hours')/sum(ev,'stopped_hours')*100)}%</td><td>${viewButton('site',s.site_id)}</td></tr>`;})))+panel('Longest parts waits',table(['Event','Site','Asset','Cause','Parts wait',''],[...parts].sort((a,b)=>b.parts_wait_hours-a.parts_wait_hours).slice(0,2).map(e=>`<tr><td>${e.event_id}</td><td>${esc(siteName(e.site_id))}</td><td>${e.asset_id}</td><td>${esc(e.cause)}</td><td>${num(e.parts_wait_hours)} h</td><td>${viewButton('event',e.event_id)}</td></tr>`)),badge('Source event records'));}
-function setup(){
-  const sites=selectedSites(),o=byId(DATA.options,'O6','option_id'),supervisor=state.role==='Supervisor';
-  const requirements=table(['Site','Technicians','Hours / person','Total training','Project capacity','Network'],sites.map(s=>`<tr><td>${siteButton(s)}</td><td>${s.technicians}</td><td>${s.training_hours_per_person} h</td><td>${num(s.training_required_hours,0)} h</td><td>${s.available_project_hours} h</td><td>${num(s.network_uptime_pct)}%</td></tr>`));
-  const configuration=supervisor?`<div class="panel-body"><div class="allocation-line"><span>Cleanup setup</span><strong>${money(sum(sites,'cleanup_setup_usd'))}</strong></div><div class="allocation-line"><span>Edge setup</span><strong>${money(sum(sites,'edge_setup_usd'))}</strong></div><div class="allocation-line"><span>Annual edge cost</span><strong>${money(sum(sites,'edge_annual_usd'))}</strong></div><div class="source-line">Workbook inputs · selected sites</div></div>`:`<div class="panel-body"><div class="allocation-line"><span>Missing readings</span><strong>${sum(sites.map(s=>s.readings.quality_counts),'Missing')}</strong></div><div class="allocation-line"><span>Suspect readings</span><strong>${sum(sites.map(s=>s.readings.quality_counts),'Suspect')}</strong></div><div class="allocation-line"><span>Received over 1 hour late</span><strong>${sum(sites.map(s=>s.readings),'delayed_over_1h_count')}</strong></div><div class="source-line">Readings sheet · 2025 daily records</div></div>`;
-  const training=`<div class="panel-body"><div class="allocation-line"><span>Lead time</span><strong>${o.lead_months} month</strong></div><div class="allocation-line"><span>Required for</span><strong>O1 or O3</strong></div>${supervisor?`<div class="allocation-line"><span>Setup / annual per site</span><strong>${money(o.setup_usd)} / ${money(o.annual_usd)}</strong></div>`:''}<div class="source-line">Solutions · ${o.source.cells.option_name}</div><button class="btn secondary small" data-action="record" data-kind="option" data-id="O6">View requirements</button></div>`;
-  return meta('Workbook requirements')+stats(stat('Technicians',sum(sites,'technicians')),stat('Required training',num(sum(sites,'training_required_hours'),0)+' h','Technicians × hours per person'),stat('Project capacity',num(sum(sites,'available_project_hours'),0)+' h','Available site hours'),stat('Completion records','—','Not supplied in workbook'))+panel('Training requirements',requirements)+`<div class="grid-two setup-cards">${panel(supervisor?'Configuration cost inputs':'Reading quality',configuration)}${panel('Digital training · '+o.option_id,training,badge('Workbook option'))}</div>`;
-}
-const MATRIX=[['Operational & financial charts',true,false,false],['Safety & reading charts',true,true,true],['Parts charts',true,true,false],['HSE source records',true,true,true],['Downtime analysis',true,false,false],['Parts readiness',true,true,false],['Training requirements',true,true,true],['Access & Activity',true,false,true],['Operational exports',true,false,false],['HSE export',false,false,true]];
-function access(){const readings=selectedSites().map(s=>s.readings);return meta('Application permissions')+stats(stat('Sites in view',selectedSites().length),stat('Source HSE records',hazards().length),stat('Missing readings',sum(readings.map(r=>r.quality_counts),'Missing')),stat('Readings delayed > 1 h',sum(readings,'delayed_over_1h_count')))+`<div class="grid-main">${panel('Role permissions',table(['View / action','Supervisor','Technician','HSE Supervisor'],MATRIX.map(([l,...p])=>`<tr><td>${l}</td>${p.map(v=>`<td class="matrix ${v?'yes':'no'}">${v?icon('check'):'—'}</td>`).join('')}</tr>`)),badge('Interface access'))}${panel('Workbook activity',recentSafety(4),badge('HSE closures'))}</div>`;}
-function primaryAction(){if(current==='hse'&&canExport('hse'))return ['Export HSE','hse'];if(state.role==='Supervisor'){const type={dashboard:'operations',downtime:'downtime',parts:'parts',setup:'setup'}[current];if(type)return ['Export report',type];}return null;}
-function render(){let requested=location.hash.slice(1)||'dashboard';if(!allowed(requested)){requested='dashboard';history.replaceState(null,'','#dashboard');}current=requested;const title=current==='setup'&&state.role==='Technician'?'Training':PAGES.find(p=>p[0]===current)[2];document.title=title+' | Lone Mesa Energy';document.getElementById('page-title').textContent=title;document.getElementById('role').value=state.role;document.getElementById('role-avatar').textContent={Supervisor:'SV',Technician:'TC','HSE Supervisor':'HS'}[state.role];document.getElementById('site-scope').innerHTML=`<option value="all">All sites</option>${DATA.sites.map(s=>`<option value="${s.site_id}">${esc(s.site_name)}</option>`).join('')}`;document.getElementById('site-scope').value=state.site;document.getElementById('nav').innerHTML=PAGES.filter(p=>allowed(p[0])).map(([id,i,l])=>`<a href="#${id}" class="${current===id?'active':''}" ${current===id?'aria-current="page"':''}>${icon(i)}<span>${id==='setup'&&state.role==='Technician'?'Training':l}</span>${id==='hse'&&criticalHazards().length?`<b class="nav-count">${criticalHazards().length}</b>`:''}</a>`).join('');const action=primaryAction(),button=document.getElementById('primary-action');button.hidden=!action;button.innerHTML=action?icon('download')+action[0]:'';button.dataset.export=action?action[1]:'';main.innerHTML=({dashboard,hse,downtime,parts,setup,access})[current]();}
+function parts(){return window.SpareParts.render();}
+function primaryAction(){if(current==='hse'&&canExport('hse'))return ['Export HSE','hse'];if(current==='dashboard'&&canExport('operations'))return ['Export report','operations'];return null;}
+function render(){let requested=location.hash.slice(1)||'dashboard';if(!allowed(requested)){requested='dashboard';history.replaceState(null,'','#dashboard');}current=requested;const title=PAGES.find(p=>p[0]===current)[2];document.title=title+' | Lone Mesa Energy';document.getElementById('page-title').textContent=title;document.getElementById('role').value=state.role;document.getElementById('role-avatar').textContent={Supervisor:'SV',Technician:'TC','HSE Supervisor':'HS'}[state.role];document.getElementById('site-scope').innerHTML=`<option value="all">All sites</option>${DATA.sites.map(s=>`<option value="${s.site_id}">${esc(s.site_name)}</option>`).join('')}`;document.getElementById('site-scope').value=state.site;document.getElementById('nav').innerHTML=PAGES.filter(p=>allowed(p[0])).map(([id,i,l])=>`<a href="#${id}" class="${current===id?'active':''}" ${current===id?'aria-current="page"':''}>${icon(i)}<span>${l}</span>${id==='hse'&&criticalHazards().length?`<b class="nav-count">${criticalHazards().length}</b>`:''}</a>`).join('');const action=primaryAction(),button=document.getElementById('primary-action');button.hidden=!action;button.innerHTML=action?icon('download')+action[0]:'';button.dataset.export=action?action[1]:'';main.innerHTML=({dashboard,parts,hse})[current]();}
 
 </script><script>
 /* Workbook-derived chart gallery. Projections are explicitly separated from records. */
@@ -1096,6 +1096,378 @@ function render(){let requested=location.hash.slice(1)||'dashboard';if(!allowed(
 })();
 
 </script><script>
+(function (root) {
+  'use strict';
+  const KEY = 'lme-spare-parts-demo-v1';
+  const OPEN = ['Pending approval', 'Approved', 'Partially received'];
+  const STATUSES = OPEN.concat(['Received', 'Cancelled']);
+  const ROLES = ['Supervisor', 'Technician', 'HSE Supervisor'];
+  const clone = value => JSON.parse(JSON.stringify(value));
+  const own = (value, key) => Object.prototype.hasOwnProperty.call(value, key);
+  const plain = value => value && typeof value === 'object' && !Array.isArray(value);
+  const fail = message => { throw new Error(message); };
+  const text = (value, label, required = false) => {
+    if (value == null) value = '';
+    if (typeof value !== 'string') fail(label + ' must be text.');
+    value = value.trim();
+    if (required && !value) fail(label + ' is required.');
+    if (value.length > 2000) fail(label + ' is too long.');
+    return value;
+  };
+  const count = (value, label, nullable = true) => {
+    if (nullable && (value == null || value === '')) return null;
+    if (typeof value !== 'number' || !Number.isSafeInteger(value) || value < 0) fail(label + ' must be a whole, nonnegative number.');
+    return value;
+  };
+  const positive = (value, label) => {
+    value = count(value, label, false);
+    if (value === 0) fail(label + ' must be greater than zero.');
+    return value;
+  };
+  const cost = value => {
+    if (value == null || value === '') return null;
+    if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) fail('Unit cost must be a nonnegative number or blank.');
+    return value;
+  };
+  const date = value => typeof value === 'string' && Number.isFinite(Date.parse(value));
+
+  function create(options) {
+    options = options || {};
+    const sites = new Map((options.sites || []).map(s => [s.site_id, { site_id: s.site_id }]));
+    const assets = new Map((options.assets || []).map(a => [a.asset_id, { asset_id: a.asset_id, site_id: a.site_id }]));
+    const getRole = typeof options.getRole === 'function' ? options.getRole : () => '';
+    let storage = null;
+    let status = { available: false, mode: 'memory', error: '', invalidData: false };
+    try {
+      storage = own(options, 'storage') ? options.storage : root.localStorage;
+      if (storage && typeof storage.getItem === 'function' && typeof storage.setItem === 'function' && typeof storage.removeItem === 'function') {
+        status.available = true; status.mode = 'local';
+      } else { storage = null; status.error = 'Browser storage is unavailable; changes last for this page session.'; }
+    } catch (_) { status.error = 'Browser storage is unavailable; changes last for this page session.'; }
+    let sequence = 0;
+    const fresh = () => ({ items: [], orders: [], siteRules: Object.fromEntries([...sites.keys()].map(id => [id, { enabled: false }])), activity: [] });
+    let state = fresh();
+    function site(id) { if (!sites.has(id)) fail('Choose a valid site.'); return id; }
+    function scope(id) { if (id !== 'all') site(id); return id; }
+    function role(permissions) {
+      const current = getRole();
+      if (!ROLES.includes(current) || !permissions.includes(current)) fail('This action is not available for your role.');
+      return current;
+    }
+    const supervisor = () => role(['Supervisor']);
+    const movement = () => role(['Supervisor', 'Technician']);
+    function now() {
+      const value = options.clock ? options.clock() : new Date();
+      const d = new Date(value);
+      if (!Number.isFinite(d.getTime())) fail('The demo clock returned an invalid date.');
+      return d.toISOString();
+    }
+    function next(prefix) { sequence += 1; return prefix + String(sequence).padStart(6, '0'); }
+    function item(id) { return state.items.find(i => i.id === id) || fail('Spare part was not found.'); }
+    function order(id) { return state.orders.find(o => o.id === id) || fail('Replenishment request was not found.'); }
+    function normalizedItem(input, old) {
+      if (!plain(input)) fail('Part details are required.');
+      const result = Object.assign({}, old || {}, input);
+      site(result.site_id);
+      if (old && result.site_id !== old.site_id) fail('A part cannot move between sites. Add a separate part at the other site.');
+      result.asset_id = result.asset_id == null || result.asset_id === '' ? null : result.asset_id;
+      if (result.asset_id !== null && (!assets.has(result.asset_id) || assets.get(result.asset_id).site_id !== result.site_id)) fail('The equipment must belong to the selected site.');
+      result.sku = text(result.sku, 'SKU', true);
+      result.name = text(result.name, 'Part name', true);
+      result.on_hand = count(result.on_hand, 'On-hand quantity');
+      result.reorder_point = count(result.reorder_point, 'Reorder point');
+      result.target_stock = count(result.target_stock, 'Target stock');
+      if (result.reorder_point !== null && result.target_stock !== null && result.target_stock <= result.reorder_point) fail('Target stock must be greater than the reorder point.');
+      result.unit_cost_usd = cost(result.unit_cost_usd);
+      result.supplier = text(result.supplier, 'Supplier') || null;
+      return {
+        id: old ? old.id : result.id,
+        site_id: result.site_id, asset_id: result.asset_id, sku: result.sku, name: result.name,
+        on_hand: result.on_hand, reorder_point: result.reorder_point, target_stock: result.target_stock,
+        unit_cost_usd: result.unit_cost_usd, supplier: result.supplier,
+        created_at: old ? old.created_at : result.created_at
+      };
+    }
+    function uniqueSKU(candidate, list = state.items) {
+      if (list.some(i => i.id !== candidate.id && i.site_id === candidate.site_id && i.sku.toLocaleLowerCase() === candidate.sku.toLocaleLowerCase())) fail('This SKU already exists at the selected site.');
+    }
+    function enrich(i) {
+      const requests = state.orders.filter(o => o.item_id === i.id && OPEN.includes(o.status));
+      const pending = requests.filter(o => o.status === 'Pending approval').reduce((n, o) => n + o.quantity - o.received_quantity, 0);
+      const approved = requests.filter(o => o.status !== 'Pending approval').reduce((n, o) => n + o.quantity - o.received_quantity, 0);
+      const onOrder = pending + approved;
+      const position = i.on_hand === null ? null : i.on_hand + onOrder;
+      const configured = i.on_hand !== null && i.reorder_point !== null && i.target_stock !== null;
+      return Object.assign({}, i, { on_order: onOrder, pending_qty: pending, approved_qty: approved, position,
+        stock_state: !configured ? 'Unconfigured' : onOrder > 0 ? 'On order' : position <= i.reorder_point ? 'Reorder needed' : 'In stock' });
+    }
+    function enrichOrder(o) { return Object.assign({}, o, { remaining_quantity: o.quantity - o.received_quantity }); }
+    function log(action, fields, actorRole, at) {
+      state.activity.push(Object.assign({ id: next('SPA-'), site_id: null, action, actor: 'Demo ' + actorRole, role: actorRole, at, notes: '' }, fields));
+    }
+    function persist() {
+      if (!storage) return;
+      try { storage.setItem(KEY, JSON.stringify(Object.assign({ version: 1, sequence }, state))); status.available = true; status.mode = 'local'; status.error = ''; }
+      catch (_) { status.available = false; status.mode = 'memory'; status.error = 'Browser storage could not save these changes; they last for this page session.'; }
+    }
+    function replenish(siteId, actorRole, at, reason) {
+      const created = [];
+      for (const i of state.items) {
+        if ((siteId !== 'all' && i.site_id !== siteId) || !state.siteRules[i.site_id].enabled) continue;
+        const v = enrich(i);
+        if (v.stock_state === 'Unconfigured' || v.on_order > 0 || v.position > i.reorder_point) continue;
+        const quantity = i.target_stock - v.position;
+        if (!Number.isSafeInteger(quantity) || quantity <= 0) continue;
+        const o = { id: next('SPO-'), item_id: i.id, site_id: i.site_id, quantity, received_quantity: 0,
+          status: 'Pending approval', created_at: at, unit_cost_usd: i.unit_cost_usd, supplier: i.supplier,
+          reason, receipts: [] };
+        state.orders.push(o); created.push(o);
+        log('Replenishment requested', { site_id: i.site_id, item_id: i.id, order_id: o.id, quantity, notes: reason }, actorRole, at);
+      }
+      return created;
+    }
+    function validateSaved(saved) {
+      if (!plain(saved) || saved.version !== 1 || !Array.isArray(saved.items) || !Array.isArray(saved.orders) || !plain(saved.siteRules) || !Array.isArray(saved.activity)) fail('Saved demo data has an invalid format.');
+      const clean = fresh();
+      const ids = new Set();
+      function id(value) { if (typeof value !== 'string' || !value || ids.has(value)) fail('Saved demo data contains an invalid or duplicate ID.'); ids.add(value); return value; }
+      for (const raw of saved.items) {
+        const v = normalizedItem(raw); id(v.id);
+        if (!date(v.created_at)) fail('Saved part has an invalid date.');
+        uniqueSKU(v, clean.items); clean.items.push(v);
+      }
+      const openItems = new Set();
+      for (const raw of saved.orders) {
+        if (!plain(raw)) fail('Saved request is invalid.');
+        id(raw.id); site(raw.site_id);
+        const sourceItem = clean.items.find(i => i.id === raw.item_id);
+        if (!sourceItem || sourceItem.site_id !== raw.site_id) fail('Saved request refers to an invalid part.');
+        const quantity = positive(raw.quantity, 'Request quantity');
+        const received = count(raw.received_quantity, 'Received quantity', false);
+        if (received > quantity || !STATUSES.includes(raw.status) || !date(raw.created_at)) fail('Saved request is invalid.');
+        if ((raw.status === 'Pending approval' || raw.status === 'Approved') && received !== 0) fail('Saved request status conflicts with receipts.');
+        if (raw.status === 'Partially received' && (received === 0 || received === quantity)) fail('Saved partial request is invalid.');
+        if (raw.status === 'Received' && received !== quantity) fail('Saved completed request is invalid.');
+        if (raw.status === 'Cancelled' && received === quantity) fail('Saved cancelled request is invalid.');
+        if (OPEN.includes(raw.status)) { if (openItems.has(raw.item_id)) fail('Saved data contains duplicate open requests.'); openItems.add(raw.item_id); }
+        if (!Array.isArray(raw.receipts)) fail('Saved receipts are invalid.');
+        const refs = new Set(); let totalReceived = 0;
+        const receipts = raw.receipts.map(r => {
+          if (!plain(r)) fail('Saved receipt is invalid.');
+          const reference = text(r.reference, 'Receipt reference', true);
+          if (refs.has(reference.toLocaleLowerCase()) || !date(r.at) || !ROLES.includes(r.role)) fail('Saved receipt is invalid.');
+          refs.add(reference.toLocaleLowerCase());
+          const q = positive(r.quantity, 'Receipt quantity'); totalReceived += q;
+          return { quantity: q, reference, at: r.at, actor: 'Demo ' + r.role, role: r.role };
+        });
+        if (totalReceived !== received) fail('Saved receipt quantities do not match the request.');
+        clean.orders.push({ id: raw.id, item_id: raw.item_id, site_id: raw.site_id, quantity, received_quantity: received,
+          status: raw.status, created_at: raw.created_at, unit_cost_usd: cost(raw.unit_cost_usd), supplier: text(raw.supplier, 'Supplier') || null,
+          reason: text(raw.reason, 'Request reason', true), receipts });
+      }
+      for (const [siteId, rule] of Object.entries(saved.siteRules)) {
+        site(siteId); if (!plain(rule) || typeof rule.enabled !== 'boolean') fail('Saved automation rules are invalid.');
+        clean.siteRules[siteId] = { enabled: rule.enabled };
+      }
+      for (const raw of saved.activity) {
+        if (!plain(raw)) fail('Saved activity is invalid.');
+        id(raw.id); if (raw.site_id !== null) site(raw.site_id);
+        if (!date(raw.at) || !ROLES.includes(raw.role)) fail('Saved activity is invalid.');
+        if (raw.item_id && !clean.items.some(i => i.id === raw.item_id)) fail('Saved activity refers to an invalid part.');
+        if (raw.order_id && !clean.orders.some(o => o.id === raw.order_id)) fail('Saved activity refers to an invalid request.');
+        const record = { id: raw.id, site_id: raw.site_id, action: text(raw.action, 'Activity', true), actor: 'Demo ' + raw.role, role: raw.role, at: raw.at, notes: text(raw.notes, 'Activity note') };
+        if (raw.item_id) record.item_id = raw.item_id;
+        if (raw.order_id) record.order_id = raw.order_id;
+        if (own(raw, 'quantity')) record.quantity = count(raw.quantity, 'Activity quantity', false);
+        clean.activity.push(record);
+      }
+      const largestId = [...ids].reduce((n, v) => Math.max(n, Number((v.match(/-(\d+)$/) || [0, 0])[1])), 0);
+      sequence = Math.max(Number.isSafeInteger(saved.sequence) && saved.sequence >= 0 ? saved.sequence : 0, largestId);
+      return clean;
+    }
+    if (storage) {
+      let raw = null;
+      try { raw = storage.getItem(KEY); }
+      catch (_) { status.available = false; status.mode = 'memory'; status.error = 'Browser storage could not be read; an empty demo has been opened.'; }
+      if (raw) {
+        try { state = validateSaved(JSON.parse(raw)); }
+        catch (_) { state = fresh(); sequence = 0; status.invalidData = true; status.error = 'Saved demo data could not be loaded. An empty demo has been opened.'; }
+      }
+    }
+
+    const api = {
+      snapshot: () => clone(state),
+      getItems(siteId = 'all') { scope(siteId); return clone(state.items.filter(i => siteId === 'all' || i.site_id === siteId).map(enrich)); },
+      getOrders(siteId = 'all') { scope(siteId); return clone(state.orders.filter(o => siteId === 'all' || o.site_id === siteId).map(enrichOrder)); },
+      getActivity(siteId = 'all') { scope(siteId); return clone(state.activity.filter(a => siteId === 'all' || a.site_id === siteId)); },
+      storageStatus: () => clone(status),
+      addItem(input) {
+        const r = supervisor(), at = now();
+        const i = normalizedItem(input); i.id = undefined; uniqueSKU(i); i.id = next('SPI-'); i.created_at = at;
+        state.items.push(i); log('Part added', { site_id: i.site_id, item_id: i.id, notes: 'Browser-local demo record.' }, r, at);
+        replenish(i.site_id, r, at, 'Inventory is at or below the reorder point.'); persist(); return clone(enrich(i));
+      },
+      updateItem(id, patch) {
+        const r = supervisor(), old = item(id), v = normalizedItem(patch, old); uniqueSKU(v);
+        const changedCount = v.on_hand !== old.on_hand;
+        const note = changedCount ? text(patch.notes || patch.note, 'Count change note', true) : text(patch.notes || patch.note, 'Change note');
+        const at = now(); Object.assign(old, v);
+        log('Part updated', { site_id: old.site_id, item_id: id, notes: note || 'Part settings updated.' }, r, at);
+        replenish(old.site_id, r, at, 'Inventory is at or below the reorder point.'); persist(); return clone(enrich(old));
+      },
+      issue(id, quantity, note) {
+        const r = movement(), i = item(id), q = positive(quantity, 'Issue quantity'), notes = text(note, 'Issue note', true);
+        if (i.on_hand === null) fail('Record an on-hand count before issuing parts.');
+        if (q > i.on_hand) fail('Issue quantity exceeds the on-hand count.');
+        const at = now(); i.on_hand -= q; log('Parts issued', { site_id: i.site_id, item_id: id, quantity: q, notes }, r, at);
+        replenish(i.site_id, r, at, 'Stock fell to or below the reorder point.'); persist(); return clone(enrich(i));
+      },
+      adjust(id, onHand, note) {
+        const r = movement(), i = item(id), q = count(onHand, 'On-hand count', false), notes = text(note, 'Count note', true), at = now();
+        const before = i.on_hand; i.on_hand = q;
+        log('Stock count recorded', { site_id: i.site_id, item_id: id, quantity: q, notes: notes + ' Previous count: ' + (before === null ? 'not supplied' : before) + '.' }, r, at);
+        replenish(i.site_id, r, at, 'Recorded stock is at or below the reorder point.'); persist(); return clone(enrich(i));
+      },
+      setAutomation(siteId, enabled) {
+        const r = supervisor(); site(siteId); if (typeof enabled !== 'boolean') fail('Automation must be enabled or disabled.');
+        const at = now(); state.siteRules[siteId].enabled = enabled;
+        log(enabled ? 'Automation enabled' : 'Automation disabled', { site_id: siteId, notes: 'Demo requests require supervisor approval; no supplier is contacted.' }, r, at);
+        if (enabled) replenish(siteId, r, at, 'Automation check: stock is at or below the reorder point.');
+        persist(); return clone(state.siteRules[siteId]);
+      },
+      check(siteId = 'all') {
+        const r = supervisor(); scope(siteId); const at = now();
+        const created = replenish(siteId, r, at, 'Manual check: stock is at or below the reorder point.');
+        persist(); return { created: created.length, orders: clone(created.map(enrichOrder)) };
+      },
+      approve(id, note) {
+        const r = supervisor(), o = order(id), notes = text(note, 'Approval note', true);
+        if (o.status !== 'Pending approval') fail('Only pending requests can be approved.');
+        const at = now(); o.status = 'Approved'; log('Request approved', { site_id: o.site_id, item_id: o.item_id, order_id: id, notes }, r, at);
+        persist(); return clone(enrichOrder(o));
+      },
+      cancel(id, note) {
+        const r = supervisor(), o = order(id), notes = text(note, 'Cancellation note', true);
+        if (!OPEN.includes(o.status)) fail('Only open requests can be cancelled.');
+        const at = now(); o.status = 'Cancelled'; log('Request cancelled', { site_id: o.site_id, item_id: o.item_id, order_id: id, notes }, r, at);
+        persist(); return clone(enrichOrder(o));
+      },
+      receive(id, quantity, reference) {
+        const r = movement(), o = order(id), q = positive(quantity, 'Receipt quantity'), ref = text(reference, 'Receipt reference', true);
+        const repeated = o.receipts.find(receipt => receipt.reference.toLocaleLowerCase() === ref.toLocaleLowerCase());
+        if (repeated) { if (repeated.quantity !== q) fail('This receipt reference already has a different quantity.'); return clone(enrichOrder(o)); }
+        if (o.status !== 'Approved' && o.status !== 'Partially received') fail('Only approved requests can receive stock.');
+        if (q > o.quantity - o.received_quantity) fail('Receipt quantity exceeds the remaining request quantity.');
+        const i = item(o.item_id); if (i.on_hand === null) fail('Record an on-hand count before receiving parts.');
+        if (!Number.isSafeInteger(i.on_hand + q)) fail('The resulting stock count is too large.');
+        const at = now(); i.on_hand += q; o.received_quantity += q;
+        o.status = o.received_quantity === o.quantity ? 'Received' : 'Partially received';
+        o.receipts.push({ quantity: q, reference: ref, at, actor: 'Demo ' + r, role: r });
+        log('Stock received', { site_id: o.site_id, item_id: o.item_id, order_id: id, quantity: q, notes: ref }, r, at);
+        replenish(o.site_id, r, at, 'Receipt check: stock is at or below the reorder point.'); persist(); return clone(enrichOrder(o));
+      },
+      seedDemo(siteId) {
+        const r = supervisor(); site(siteId);
+        const at = now();
+        let i = state.items.find(v => v.site_id === siteId && v.sku.toLocaleLowerCase() === 'demo-spare-01');
+        if (!i) {
+          i = { id: next('SPI-'), site_id: siteId, asset_id: [...assets.values()].find(a => a.site_id === siteId)?.asset_id || null,
+            sku: 'DEMO-SPARE-01', name: 'DEMO spare kit', on_hand: 4, reorder_point: 2, target_stock: 8, unit_cost_usd: null, supplier: null, created_at: at };
+          state.items.push(i); log('Demo kit added', { site_id: siteId, item_id: i.id, notes: 'Illustrative stock only; this is not a workbook record.' }, r, at);
+        }
+        state.siteRules[siteId].enabled = true;
+        log('Automation enabled', { site_id: siteId, notes: 'Demo setup. No supplier is contacted.' }, r, at);
+        replenish(siteId, r, at, 'Demo setup check: stock is at or below the reorder point.'); persist(); return clone(state);
+      },
+      reset() {
+        supervisor(); state = fresh(); sequence = 0; status.invalidData = false;
+        if (storage) {
+          try { storage.removeItem(KEY); status.available = true; status.mode = 'local'; status.error = ''; }
+          catch (_) { status.available = false; status.mode = 'memory'; status.error = 'Browser storage could not be cleared. This session is reset; saved demo data may return after reload.'; }
+        }
+        return clone(state);
+      }
+    };
+    return Object.freeze(api);
+  }
+  root.SparePartsModel = Object.freeze({ create, storageKey: KEY });
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script><script>
+/* User-entered spare-parts demo. Historical workbook evidence remains separate. */
+(() => {
+  'use strict';
+  let tab='inventory',query='',filter='all',page=0,dialogState=null;
+  const E=s=>esc(s),N=n=>n==null?'—':num(n,0), isSup=()=>state.role==='Supervisor', canMove=()=>['Supervisor','Technician'].includes(state.role);
+  const statuses=['Pending approval','Approved','Partially received','Received','Cancelled'];
+  function store(){if(!window.PartsStore){let storage=null;try{storage=window.localStorage;}catch{}window.PartsStore=window.SparePartsModel.create({sites:DATA.sites,assets:DATA.assets,getRole:()=>state.role,storage});}return window.PartsStore;}
+  const snapshot=()=>store().snapshot(),inScope=x=>state.site==='all'||x.site_id===state.site,items=()=>store().getItems().filter(inScope);
+  const allOrders=()=>store().getOrders?store().getOrders():snapshot().orders.map(o=>({...o,remaining_quantity:o.quantity-o.received_quantity})),orders=()=>allOrders().filter(inScope);
+  const item=id=>store().getItems().find(x=>x.id===id),order=id=>allOrders().find(x=>x.id===id),openOrders=()=>orders().filter(o=>!['Received','Cancelled'].includes(o.status));
+  const rule=id=>{const r=snapshot().siteRules;return Array.isArray(r)?r.find(x=>x.site_id===id)||{enabled:false}:r[id]||{enabled:false};};
+  const tick=on=>on?'checked':'',moneyCell=v=>v==null?'Not supplied':money(v),stamp=s=>s?new Date(s).toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'UTC'})+' UTC':'—';
+  const btn=(label,action,id='',cls='secondary small',disabled=false)=>`<button type="button" class="btn ${cls}" data-sp-action="${action}" data-sp-id="${E(id)}" ${disabled?'disabled':''}>${E(label)}</button>`;
+  const table=(heads,rows)=>`<div class="table-wrap sp-table"><table><thead><tr>${heads.map(h=>`<th>${E(h)}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table></div>`;
+  const statusBadge=s=>badge(s==='On order'?'Request open':s,s==='Received'||s==='In stock'?'success':s==='Reorder needed'?'critical':['Pending approval','Partially received','Unconfigured'].includes(s)?'warning':'neutral');
+  const field=(label,control,help='',full=false)=>`<label class="sp-field ${full?'full':''}">${E(label)}${control}${help?`<small>${E(help)}</small>`:''}</label>`;
+  const input=(id,value='',extra='')=>`<input id="sp-${id}" value="${E(value??'')}" ${extra}>`,select=(id,opts,value)=>`<select id="sp-${id}">${opts.map(([v,l])=>`<option value="${E(v)}" ${String(v)===String(value)?'selected':''}>${E(l)}</option>`).join('')}</select>`;
+  const textarea=(id,placeholder='Required note')=>`<textarea id="sp-${id}" rows="3" placeholder="${E(placeholder)}" maxlength="500"></textarea>`;
+  const val=id=>document.getElementById('sp-'+id)?.value??'',number=id=>val(id)===''?null:Number(val(id));
+  function refresh(){if(location.hash==='#parts'||current==='parts')render();}
+  function showTab(next){if(!['inventory','orders','automation'].includes(next))return;tab=next;page=0;query='';filter='all';if(location.hash==='#parts')refresh();}
+  function resetView(){query='';filter='all';page=0;if(document.querySelector('#modal-body .sp-dialog')){modal.close();document.getElementById('modal-body').innerHTML='';}dialogState=null;}
+  function paginate(rows,size=6){page=Math.min(page,Math.max(0,Math.ceil(rows.length/size)-1));return rows.slice(page*size,(page+1)*size);}
+  function pagination(total,size=6){return `<div class="sp-pagination"><span>${total?page*size+1:0}–${Math.min(total,(page+1)*size)} of ${total}</span><div>${btn('Previous','prev','','secondary small',page===0)}${btn('Next','next','','secondary small',(page+1)*size>=total)}</div></div>`;}
+  function baseline(){const sites=selectedSites(),sourceEvents=DATA.events.filter(e=>e.event_type==='Unplanned');return `<details class="sp-source" ${items().length?'':'open'}><summary>Workbook evidence <small>2025 · historical source values</small></summary>${table(['Site','Source spare fill','Parts-wait hours','Affected events'],sites.map(s=>{const ev=sourceEvents.filter(e=>e.site_id===s.site_id);return `<tr><td><strong>${E(s.site_name)}</strong></td><td>${num(s.spare_fill_pct,0)}%</td><td>${num(sum(ev,'parts_wait_hours'))} h</td><td>${ev.filter(e=>e.parts_wait_hours>0).length}</td></tr>`;}))}<div class="sp-source-foot">Assets / Events · ${E(DATA.meta.file)}. Spare-fill rates are source inputs, not inventory balances.</div></details>`;}
+  function inventory(){const all=items(),list=all.filter(i=>(filter==='all'||i.stock_state===filter)&&(!query||(i.sku+' '+i.name+' '+siteName(i.site_id)+' '+(i.asset_id||'')).toLowerCase().includes(query.toLowerCase())));const top=`<div class="sp-toolbar"><div><input id="sp-search" aria-label="Search inventory" placeholder="Search parts or SKU" value="${E(query)}"><select id="sp-status" aria-label="Stock status"><option value="all">All stock states</option>${['Unconfigured','Reorder needed','On order','In stock'].map(s=>`<option ${filter===s?'selected':''}>${s}</option>`).join('')}</select></div>${isSup()?`<div>${btn('Add part','add','','')}${btn('Try demo','demo')}</div>`:''}</div>`;
+    if(!all.length)return `<section class="panel"><div class="panel-head"><h2>Inventory</h2>${badge('Demo records')}</div><div class="sp-empty"><h3>No inventory supplied</h3><p>The workbook contains no SKU-level stock records.</p><div class="sp-actions">${isSup()?btn('Add part','add','','')+btn('Try demo','demo'):'<span class="subtle">A Supervisor can add demo inventory.</span>'}</div></div></section>`;
+    const body=paginate(list).map(i=>`<tr><td class="sp-item"><strong>${E(i.name)}</strong><small>${E(i.sku)}${i.asset_id?' · '+E(i.asset_id):''}</small></td><td>${E(siteName(i.site_id))}</td><td class="sp-number">${N(i.on_hand)}</td><td class="sp-number">${N(i.reorder_point)}</td><td class="sp-number">${N(i.target_stock)}</td><td class="sp-number">${N(i.on_order)}</td><td>${statusBadge(i.stock_state)}</td><td><div class="sp-actions">${canMove()?btn('Issue','issue',i.id,'secondary small',i.on_hand==null||i.on_hand===0)+btn('Count','count',i.id):''}${btn(isSup()?'Edit':'View','item',i.id)}</div></td></tr>`);
+    return top+`<section class="panel"><div class="panel-head"><h2>Tracked parts</h2>${badge('User-entered demo')}</div>${body.length?table(['Part / SKU','Site','On hand','Reorder','Target','Open qty','Status',''],body):'<div class="empty">No matching parts</div>'}${pagination(list.length)}</section>`;
+  }
+  function activity(){const list=snapshot().activity.filter(inScope).slice().reverse().slice(0,12);return `<details class="sp-source"><summary>Demo activity <small>Saved in this browser</small></summary><div class="sp-activity">${list.length?list.map(a=>`<div class="sp-activity-row"><time>${E(stamp(a.at))}</time><div><strong>${E(a.action)}</strong><small>${E(a.actor)} · ${E(siteName(a.site_id))}${a.notes?' · '+E(a.notes):''}${a.quantity!=null?' · Qty '+N(a.quantity):''}</small></div></div>`).join(''):'<div class="empty">No inventory activity yet</div>'}</div></details>`;}
+  function orderView(){const list=orders().filter(o=>(filter==='all'||o.status===filter)&&(!query||(o.id+' '+(item(o.item_id)?.name||'')+' '+siteName(o.site_id)).toLowerCase().includes(query.toLowerCase()))).slice().reverse();return `<div class="sp-toolbar"><div><input id="sp-search" aria-label="Search orders" placeholder="Search orders or parts" value="${E(query)}">${select('status',[['all','All order states'],...statuses.map(s=>[s,s])],filter)}</div>${isSup()?btn('Check stock','check'):'<span class="subtle">Requests stay local until reviewed.</span>'}</div><section class="panel"><div class="panel-head"><h2>Replenishment requests</h2>${badge('No supplier connection')}</div>${list.length?table(['Request','Part / site','Requested','Received','Remaining','Status',''],paginate(list).map(o=>{const i=item(o.item_id);return `<tr><td><strong>${E(o.id)}</strong></td><td class="sp-item"><strong>${E(i?.name||o.item_id)}</strong><small>${E(siteName(o.site_id))}</small></td><td>${N(o.quantity)}</td><td>${N(o.received_quantity)}</td><td>${N(o.remaining_quantity)}</td><td>${statusBadge(o.status)}</td><td>${btn('View','order',o.id)}</td></tr>`}))+pagination(list.length):'<div class="sp-empty"><h3>No replenishment requests</h3><p>Enabled site rules create requests when stock reaches its reorder point.</p></div>'}</section>`+activity();}
+  function automation(){return `<section class="panel"><div class="panel-head"><h2>Site replenishment rules</h2>${isSup()?btn('Check stock','check'):badge('Read only')}</div>${table(['Site','Automation','Configured parts','Open requests',''],selectedSites().map(s=>{const all=store().getItems().filter(i=>i.site_id===s.site_id),configured=all.filter(i=>i.on_hand!=null&&i.reorder_point!=null&&i.target_stock!=null),open=allOrders().filter(o=>o.site_id===s.site_id&&!['Received','Cancelled'].includes(o.status));return `<tr><td><strong>${E(s.site_name)}</strong></td><td><label class="sp-rule"><input type="checkbox" data-sp-rule="${E(s.site_id)}" ${tick(rule(s.site_id).enabled)} ${isSup()?'':'disabled'}> ${rule(s.site_id).enabled?'Enabled':'Off'}</label></td><td>${configured.length} / ${all.length}</td><td>${open.length}</td><td>${isSup()?btn('Add part','add-site',s.site_id):''}</td></tr>`;}))}<div class="sp-rule-note">Demo inventory position = on hand + open request quantity. At or below the reorder point → request the gap to target. A Supervisor approves each request.</div></section>${isSup()?`<div class="sp-toolbar"><span class="subtle">Automation never sends an order to a supplier.</span>${btn('Reset spare-parts demo','reset','','secondary small')}</div>`:''}`;}
+  function view(){const all=items(),os=openOrders(),selected=selectedSites(),storageState=store().storageStatus(),mode=storageState.mode;return `<div class="sp-workspace"><div class="sp-note"><span><strong>Demo inventory</strong> · ${storageState.error?E(storageState.error):mode==='memory'?'Session only; browser storage unavailable.':'Saved in this browser.'} No supplier connection.</span><span>${E(state.role)} · ${state.site==='all'?'All sites':E(siteName(state.site))}</span></div><div class="stats">${stat('Tracked items',all.length,'Demo inventory')}${stat('Reorder needed',all.filter(i=>i.stock_state==='Reorder needed').length,'Configured stock only',all.some(i=>i.stock_state==='Reorder needed')?'critical':'')}${stat('Open requests',os.length,'Pending / approved / partial')}${stat('Automation enabled',selected.filter(s=>rule(s.site_id).enabled).length+' / '+selected.length,'Selected sites')}</div><div class="sp-tabs" role="tablist">${[['inventory','Inventory'],['orders','Orders'],['automation','Automation']].map(([id,l])=>`<button class="sp-tab ${tab===id?'active':''}" data-sp-action="tab" data-sp-id="${id}" role="tab" aria-selected="${tab===id}">${l}${id==='orders'&&os.length?`<span class="badge neutral">${os.length}</span>`:''}</button>`).join('')}</div>${({inventory,orders:orderView,automation})[tab]()}${baseline()}</div>`;}
+  function dialog(title,body,ctx){dialogState=ctx;openModal(title,`<div class="sp-dialog">${body}<div class="sp-error" id="sp-error" role="alert"></div></div>`);}
+  const note=()=>'<div class="sp-note">User-entered demo data · separate from workbook records</div>';
+  const footer=(label,action,id='')=>`<div class="sp-dialog-footer">${btn('Cancel','close')}${btn(label,action,id,'')}</div>`;
+  function assetOptions(site){return [['','Site-level spare'],...DATA.assets.filter(a=>a.site_id===site).map(a=>[a.asset_id,a.asset_id+' · '+a.asset_type])];}
+  function openAdd(site){if(!isSup())return false;openItem(null,site);return true;}
+  function openItem(id,site){const i=id?item(id):null;if(id&&(!i||!inScope(i)))return false;const editing=!!i,readOnly=!isSup(),sid=i?.site_id||site||(state.site!=='all'?state.site:DATA.sites[0].site_id),lock=readOnly?'disabled':'';
+    const siteSelect=select('site',DATA.sites.map(s=>[s.site_id,s.site_name]),sid).replace('<select','<select '+(editing?'disabled':''));const fields=field('Site',siteSelect)+field('Asset',select('asset',assetOptions(sid),i?.asset_id||'').replace('<select','<select '+lock))+field('SKU',input('sku',i?.sku||'',`maxlength="60" required ${lock}`))+field('Part name',input('name',i?.name||'',`maxlength="100" required ${lock}`))+(editing?field('On hand',input('on-hand',i?.on_hand,'disabled'),'Use Count to record a stock adjustment.'):field('Opening count',input('on-hand','',`type="number" min="0" step="1"`),'Leave blank if unknown.'))+field('Reorder point',input('reorder',i?.reorder_point,`type="number" min="0" step="1" ${lock}`),'At or below this count triggers a request.')+field('Target stock',input('target',i?.target_stock,`type="number" min="0" step="1" ${lock}`),'Target must exceed the reorder point.')+field('Supplier (optional)',input('supplier',i?.supplier||'',`maxlength="100" ${lock}`))+ (isSup()?field('Unit cost, USD (optional)',input('cost',i?.unit_cost_usd,`type="number" min="0" step="0.01"`),'Demo input; no price supplied by the workbook.'):'');
+    dialog(editing?i.name:'Add demo part',note()+`<div class="sp-form">${fields}</div>`+(readOnly?'<div class="sp-dialog-footer">'+btn('Close','close')+'</div>':footer(editing?'Save changes':'Add part','save-item',id||'')),{kind:'item',id,site:sid});return true;
+  }
+  function movement(id,kind){const i=item(id);if(!i||!canMove())return false;dialog(kind==='issue'?'Issue stock · '+i.name:'Stock count · '+i.name,note()+`<div class="sp-count-change"><span>Current on hand</span><strong>${N(i.on_hand)}</strong></div><div class="sp-form">${field(kind==='issue'?'Quantity to issue':'New on-hand count',input('quantity',kind==='count'?i.on_hand:'',`type="number" min="${kind==='issue'?1:0}" step="1" required ${kind==='issue'&&i.on_hand!=null?'max="'+i.on_hand+'"':''}`))}${field('Movement note',textarea('note','Required · demo usage or count reference'),'',true)}</div><div class="sp-draft-notice">${rule(i.site_id).enabled?'Site automation is enabled. Eligible shortages create a pending request.':'Site automation is off.'}</div>`+footer(kind==='issue'?'Issue stock':'Save count','save-movement',id),{kind,id});return true;}
+  const facts=rows=>`<dl class="sp-facts">${rows.map(([k,v])=>`<div><dt>${E(k)}</dt><dd>${E(v)}</dd></div>`).join('')}</dl>`;
+  function openOrder(id){const o=order(id);if(!o||!inScope(o))return false;const i=item(o.item_id),stage=['Pending approval','Approved','Partially received','Received'],idx=stage.indexOf(o.status);let body=note()+`<div class="sp-order-stages">${stage.map((s,n)=>`${n?'<i>→</i>':''}<span class="${n===idx?'active':n<idx?'complete':''}">${s}</span>`).join('')}${o.status==='Cancelled'?statusBadge('Cancelled'):''}</div>`+facts([['Part / SKU',(i?.name||o.item_id)+' / '+(i?.sku||'')],['Site',siteName(o.site_id)],['Requested',N(o.quantity)],['Received / remaining',N(o.received_quantity)+' / '+N(o.remaining_quantity)],['Supplier',o.supplier||'Not supplied'],['Reason',o.reason||'Replenishment']].concat(isSup()?[['Unit cost',moneyCell(o.unit_cost_usd)],['Request value',o.unit_cost_usd==null?'Not supplied':money(o.unit_cost_usd*o.quantity)]]:[]));
+    if(isSup()&&o.status==='Pending approval')body+=`<div class="sp-dialog-section"><h3>Supervisor review</h3>${field('Approval note',textarea('approval','Required · approval rationale'))}<div class="sp-actions">${btn('Approve request','approve',id,'')}${btn('Cancel request','cancel-order',id)}</div></div>`;
+    if(canMove()&&['Approved','Partially received'].includes(o.status))body+=`<div class="sp-dialog-section"><h3>Receive stock</h3><div class="sp-form">${field('Quantity received',input('receipt-quantity','',`type="number" min="1" step="1" max="${o.remaining_quantity}" required`))}${field('Receipt reference',input('receipt-reference','',`maxlength="100" required`),'Use a unique demo reference for each delivery.')}</div><div class="sp-dialog-footer">${isSup()?btn('Cancel remainder','cancel-order',id):''}${btn('Record receipt','receive',id,'')}</div></div>`;
+    const notes=snapshot().activity.filter(a=>a.order_id===id);body+=`<details class="sp-source"><summary>Request history <small>${notes.length} updates</small></summary><div class="sp-activity">${notes.map(a=>`<div class="sp-activity-row"><time>${E(stamp(a.at))}</time><div><strong>${E(a.action)}</strong><small>${E(a.actor)}${a.notes?' · '+E(a.notes):''}</small></div></div>`).join('')||'<div class="empty">No activity yet</div>'}</div></details>`;dialog(o.id+' · '+o.status,body,{kind:'order',id});return true;
+  }
+  function openDemo(){if(!isSup())return false;const sid=state.site!=='all'?state.site:DATA.sites.find(s=>s.site_name==='Mesa')?.site_id||DATA.sites[0].site_id;dialog('Try replenishment · demo','<p>Create one clearly simulated spare at a selected site. Starting stock: <strong>4</strong>, reorder point: <strong>2</strong>, target: <strong>8</strong>. No price is added.</p>'+field('Demo site',select('demo-site',DATA.sites.map(s=>[s.site_id,s.site_name]),sid))+'<div class="sp-draft-notice">Site automation will be enabled. Then issue 3 units to trigger a pending request for 7.</div>'+footer('Create demo spare','seed'),{kind:'demo'});return true;}
+  function resetDialog(){if(!isSup())return;dialog('Reset spare-parts demo','<p>Remove all user-entered spare parts, requests, automation settings and spare-parts activity from this browser?</p><p>Workbook records and HSE activity stay unchanged.</p>'+footer('Reset spare-parts data','confirm-reset'),{kind:'reset'});}
+  function error(e){const box=document.getElementById('sp-error');if(box)box.textContent=e.message||String(e);else toast(e.message||String(e));}
+  function done(message,keep){refresh();if(keep)keep();else{modal.close();dialogState=null;}if(message)toast(message);}
+  document.addEventListener('click',event=>{const b=event.target.closest('[data-sp-action]');if(!b||b.disabled)return;const a=b.dataset.spAction,id=b.dataset.spId;try{
+    if(a==='tab')showTab(id);if(a==='prev'){page=Math.max(0,page-1);refresh();}if(a==='next'){page++;refresh();}if(a==='add')openAdd();if(a==='add-site')openAdd(id);if(a==='item')openItem(id);if(a==='order')openOrder(id);if(a==='demo')openDemo();if(a==='issue'||a==='count')movement(id,a);if(a==='close'){modal.close();dialogState=null;}
+    if(a==='save-item'){if(!isSup())throw Error('Only a Supervisor can configure parts.');const patch={site_id:val('site'),asset_id:val('asset')||null,sku:val('sku'),name:val('name'),reorder_point:number('reorder'),target_stock:number('target'),supplier:val('supplier')||null,unit_cost_usd:number('cost')};if(id){delete patch.site_id;store().updateItem(id,patch);}else{patch.on_hand=number('on-hand');store().addItem(patch);}done(id?'Demo part updated.':'Demo part added.');}
+    if(a==='save-movement'){const kind=dialogState?.kind;if(kind==='issue')store().issue(id,number('quantity'),val('note'));else if(kind==='count')store().adjust(id,number('quantity'),val('note'));else throw Error('Open a stock movement first.');done('Demo stock updated. Replenishment rules checked.');}
+    if(a==='approve'){store().approve(id,val('approval'));done('Demo request approved. No supplier order was sent.',()=>openOrder(id));}
+    if(a==='cancel-order')dialog('Cancel '+id,field('Cancellation reason',textarea('cancel-reason','Required · cancellation reason'))+footer('Cancel request','save-cancel',id),{kind:'cancel',id});
+    if(a==='save-cancel'){store().cancel(id,val('cancel-reason'));done('Demo request cancelled.',()=>openOrder(id));}
+    if(a==='receive'){store().receive(id,number('receipt-quantity'),val('receipt-reference'));done('Receipt saved to demo inventory.',()=>openOrder(id));}
+    if(a==='check'){const result=store().check(state.site);refresh();toast((Array.isArray(result.created)?result.created.length:result.created||0)+' replenishment request(s) created.');}
+    if(a==='seed'){const sid=val('demo-site');store().seedDemo(sid);modal.close();dialogState=null;tab='inventory';if(state.site!==sid)changeSite(sid);else refresh();toast('Simulated spare added. Issue 3 units to try replenishment.');}
+    if(a==='reset')resetDialog();if(a==='confirm-reset'){store().reset();query='';filter='all';page=0;tab='inventory';done('Spare-parts demo reset. HSE records are unchanged.');}
+  }catch(e){error(e);}});
+  document.addEventListener('change',event=>{const el=event.target;try{if(el.id==='sp-status'){filter=el.value;page=0;refresh();}if(el.id==='sp-site'&&dialogState?.kind==='item'&&!dialogState.id){const target=document.getElementById('sp-asset');target.innerHTML=assetOptions(el.value).map(([v,l])=>`<option value="${E(v)}">${E(l)}</option>`).join('');}if(el.dataset.spRule){store().setAutomation(el.dataset.spRule,el.checked);refresh();}}catch(e){error(e);refresh();}});
+  document.addEventListener('input',event=>{if(event.target.id!=='sp-search')return;const old=event.target.selectionStart;query=event.target.value;page=0;refresh();const box=document.getElementById('sp-search');if(box){box.focus();box.setSelectionRange(old,old);}});
+  window.addEventListener('viewchange',resetView);
+  store();
+  window.SpareParts=Object.freeze({render:view,openAdd,openDemo,openOrder,openItem,showTab,resetView});
+})();
+
+</script><script>
 /* Browser-local workbook guide. No network calls, model, or source mutations. */
 (() => {
   'use strict';
@@ -1109,7 +1481,7 @@ function render(){let requested=location.hash.slice(1)||'dashboard';if(!allowed(
   const isFinance = () => context().role==='Supervisor';
   const permittedPage = id => typeof allowed==='function' && allowed(id);
   const chartAccess = id => typeof root.AnalyticsUI?.canChart==='function' ? root.AnalyticsUI.canChart(id) : context().role==='Supervisor'||['hse','data-quality'].includes(id)||(id==='parts'&&context().role==='Technician');
-  const pageNames = {dashboard:'Dashboard',hse:'HSE Actions',downtime:'Downtime',parts:'Parts Readiness',setup:'Setup & Training',access:'Access & Activity'};
+  const pageNames = {dashboard:'Dashboard',parts:'Spare Parts',hse:'HSE Actions'};
   const chartNames = {'oil-loss':'Oil loss',production:'Production',financial:'Financial impact',downtime:'Downtime','site-comparison':'Site comparison',hse:'HSE','data-quality':'Data quality',parts:'Parts readiness'};
   let panel, log, input, launcher, panelContext, lastTopic=null, lastScope=null, previousContext='', initialized=false;
   const safeText = (tag,text,cls) => {const e=document.createElement(tag);if(cls)e.className=cls;e.textContent=text;return e;};
@@ -1128,6 +1500,7 @@ function render(){let requested=location.hash.slice(1)||'dashboard';if(!allowed(
     if(/\b(train|training|trained|course|courses|capacity|configuration|setup|digital|staff|technicians|o6)\b/.test(q))return 'training';
     if(/\b(hse|safety|hazard|hazards|critical|severity|overdue|closure|closures|loto|h2s)\b/.test(q))return 'hse';
     if(/\b(quality|reading|readings|sensor|sensors|missing|suspect|delayed|connectivity|network|offline|uptime)\b/.test(q))return 'quality';
+    if(/\b(parts|spare|spares|inventory|stock|reorder|replenishment|order|orders|receipt|receipts|automation|supplier)\b/.test(q))return 'parts';
     if(/\b(finance|financial|cost|costs|revenue|margin|contribution|dollars|money|profit|price|prices|budget)\b/.test(q))return 'financial';
     if(/\b(parts|spare|spares|inventory|stock|reorder|procurement|supply|replenishment)\b/.test(q))return 'parts';
     if(/\b(downtime|down time|outage|outages|bottleneck|bottlenecks|failure|failures|repair|dispatch|detection|stopped|reliability)\b/.test(q))return 'downtime';
@@ -1138,17 +1511,23 @@ function render(){let requested=location.hash.slice(1)||'dashboard';if(!allowed(
     return null;
   }
   function action(label,kind,id,site,extra={}){return {label,kind,id,site,...extra};}
-  const pageAction = (id,site) => permittedPage(id)?action('Open '+(id==='setup'&&context().role==='Technician'?'Training':pageNames[id]),'page',id,site):null;
+  const pageAction = (id,site) => permittedPage(id)?action('Open '+pageNames[id],'page',id,site):null;
   const chartAction = (id,site,period='current') => chartAccess(id)&&(period!=='future'||['oil-loss','production','financial','site-comparison'].includes(id))?action('View '+chartNames[id]+' chart','chart',id,site,{period}):null;
   const response = (text,source='',actions=[]) => ({text,source,actions:actions.filter(Boolean)});
   function dataFor(site){const d=workbook(),ev=scoped(d.events,site).filter(e=>e.event_type==='Unplanned'),sites=scoped(d.sites,site),hse=scoped(d.hse,site),p=scoped(d.production,site);return {ev,sites,hse,p,open:hse.filter(h=>h.action_status==='Open'),hours:total(ev,'stopped_hours'),parts:total(ev,'parts_wait_hours')};}
   function monthLabel(value){return new Date(value+'T00:00:00Z').toLocaleDateString('en-US',{month:'long',year:'numeric',timeZone:'UTC'});}
   function monthly(site){const rows=dataFor(site).p;return [...new Set(rows.map(p=>p.month))].sort().map(month=>{const group=rows.filter(p=>p.month===month);return {month,produced:total(group,'produced_oil_bbl'),potential:total(group,'potential_oil_bbl'),gross:total(group,'gross_deferred_bbl'),recovered:total(group,'recovered_oil_bbl'),net:total(group,'gross_deferred_bbl')-total(group,'recovered_oil_bbl')};});}
   function answerSource(){const d=workbook(),last=d.assets.map(a=>a.latest?.observed_utc).filter(Boolean).sort().at(-1);const duplicates=d.meta.cleaning.filter(s=>s.verifiedDuplicateRowsRemoved).map(s=>s.sheet+': '+fmt(s.verifiedDuplicateRowsRemoved,0)).join('; ');return response(`The source is ${d.meta.file}. Operating records cover 2025; latest sensor records are ${last?.slice(0,10)||'not supplied'}. HSE status is the ${d.meta.hseAsOf} workbook snapshot. This site has no live feed. Forecasts, when shown, are estimates derived from historical workbook values, not live results.\n\nVerified duplicate exports were removed (${duplicates}). Missing sensor values and unknown invoices remain unavailable.`, 'ReadMe, Assets, Events, Production, Readings, HSE',[action('View source details','source')]);}
-  function answerAccess(){const role=context().role,views=Object.entries(pageNames).filter(([id])=>permittedPage(id)).map(([id,label])=>id==='setup'&&role==='Technician'?'Training':label).join(', ');return response(`You are using the ${role} view. Available pages: ${views}. ${role==='Supervisor'?'Operational reports and financial views are available.':role==='HSE Supervisor'?'Safety exports are available; operational financial views are restricted.':'Financial views, exports, and Access & Activity are restricted.'}\n\nI cannot switch roles, grant access, modify source records, verify safety closure, or control equipment. The role selector is a presentation view; production identity and server authorization are not connected.`, 'Application permission design; not workbook user accounts',[pageAction('access',context().site)]);}
+  function answerAccess(){const role=context().role;return response(`The three pages are Dashboard, Spare Parts and HSE Actions. ${role==='Supervisor'?'Supervisors can configure inventory and site rules, review replenishment requests, approve or cancel demo orders, and record stock movements.':role==='Technician'?'Technicians can inspect stock, record issues/counts and receive approved demo orders. They cannot configure automation or approve requests.':'HSE Supervisors can inspect Spare Parts in read-only mode and review safety actions.'}\n\nFinancial chart permissions remain role-specific. The page role selector and HSE Demo role are demonstrations, not production authentication. The guide can explain and navigate; it cannot approve purchases or alter records.`, 'Application view and workflow design',[pageAction('parts',context().site),pageAction('hse',context().site)]);}
+
   function answerHse(site,q){const d=dataFor(site),critical=d.open.filter(h=>h.potential_severity===5),hours=total(d.open,'action_person_hours'),closed=d.hse.filter(h=>h.action_status==='Closed');const due=d.open.filter(h=>h.due_date&&h.due_date<workbook().meta.hseAsOf);let text=`${name(site)} ${site==='all'?'have':'has'} ${d.open.length} open HSE actions, including ${critical.length} severity-5 actions, and ${closed.length} closed actions. Open actions require ${fmt(hours,0)} person-hours in the workbook. ${due.length} open actions were overdue at the source snapshot (${workbook().meta.hseAsOf}).`;if(/\b(critical|worst|hazard|hazards|list|which|h2s|loto)\b/.test(q)&&critical.length)text+='\n\nCritical open records: '+critical.map(h=>`${h.hse_id} · ${name(h.site_id)} · ${h.hazard}`).join('; ')+'.';return response(text,'HSE · source status snapshot',[pageAction('hse',site),chartAction('hse',site)]);}
-  function answerParts(site,q){if(!permittedPage('parts'))return response('Parts Readiness is not available in the HSE Supervisor view. I can help with safety actions, training requirements, or reading quality.','Application permission design',[pageAction('hse',site),pageAction('setup',site)]);const d=dataFor(site),waits=d.ev.filter(e=>e.parts_wait_hours>0),fill=d.sites.map(s=>`${s.site_name} ${fmt(s.spare_fill_pct,0)}%`).join(', ');let text=`${name(site)} recorded ${fmt(d.parts)} parts-wait equipment-hours across ${waits.length} unplanned events in 2025. That is ${fmt(d.hours?d.parts/d.hours*100:0)}% of unplanned downtime. Local spare fill: ${fill}.`;if(/\b(stock|inventory|reorder|available|quantity|units|purchase|buy|request)\b/.test(q))text+='\n\nThe workbook has no part-level inventory balances, reorder points, purchase orders, or receipts. I cannot infer stock availability.';return response(text,'Events, Assets · 2025',[pageAction('parts',site),chartAction('parts',site)]);}
-  function answerDowntime(site,q){if(!permittedPage('downtime'))return response('Detailed downtime analysis is restricted to the Supervisor view. Your view still includes safety and training information'+(permittedPage('parts')?' and Parts Readiness.':'.'),'Application permission design',[pageAction('parts',site),pageAction('hse',site)]);const d=dataFor(site),causes=[...new Set(d.ev.map(e=>e.cause))].map(c=>[c,total(d.ev.filter(e=>e.cause===c),'stopped_hours')]).sort((a,b)=>b[1]-a[1]);const stages=[['Detection','detect_hours'],['Dispatch','dispatch_hours'],['Parts wait','parts_wait_hours'],['Repair','repair_hours'],['Restart','restart_hours']].map(([label,key])=>[label,total(d.ev,key)]).sort((a,b)=>b[1]-a[1]);let text=`${name(site)} recorded ${fmt(d.hours)} unplanned equipment-hours across ${d.ev.length} events in 2025 (${fmt(d.ev.length?d.hours/d.ev.length:0)} h per event).`;if(causes[0])text+=` Largest cause: ${causes[0][0]}, ${fmt(causes[0][1])} h (${fmt(causes[0][1]/d.hours*100)}%).`;if(stages[0])text+=` Largest delay stage: ${stages[0][0]}, ${fmt(stages[0][1])} h.`;if(/\b(stage|stages|breakdown|bottleneck|bottlenecks)\b/.test(q))text+='\n\n'+stages.map(([n,h])=>n+': '+fmt(h)+' h').join('; ')+'.';text+='\n\nCause categories and delay stages describe the same events; do not add them together.';return response(text,'Events · Unplanned records only',[pageAction('downtime',site),chartAction('downtime',site)]);}
+  function answerParts(site,q){const d=dataFor(site),waits=d.ev.filter(e=>e.parts_wait_hours>0),fill=d.sites.map(s=>`${s.site_name} ${fmt(s.spare_fill_pct,0)}%`).join(', ');const items=root.PartsStore?.getItems(site)||[],orders=root.PartsStore?.getOrders(site)||[],pending=orders.filter(o=>o.status==='Pending approval'),active=orders.filter(o=>['Pending approval','Approved','Partially received'].includes(o.status));let text=`${name(site)} · ${items.length} demo inventory records, ${active.length} open demo orders, ${pending.length} awaiting approval. The workbook does not supply a part catalog, inventory balances, suppliers or purchase orders. New entries are simulated and saved in this browser.\n\n2025 source history: ${fmt(d.parts)} parts-wait equipment-hours across ${waits.length} unplanned events. Local spare fill: ${fill}.`;
+    if(/\b(auto|automatic|automated|automation|reorder|replenishment|rule|rules)\b/.test(q))text+='\n\nEnable auto-replenishment for each site and configure a part’s stock count, reorder point and target. When inventory position (on hand + outstanding order quantity) reaches the reorder point, the app creates one request for target minus inventory position. An existing open request prevents duplicates. Requests require supervisor approval; no purchase is sent to a supplier.';
+    if(/\b(receive|receipt|receipts|receive[d]?)\b/.test(q))text+='\n\nOpen Orders, choose an approved order, enter the received quantity and a reference. Partial receipts update stock and remaining quantity. Receiving more than the remaining amount is blocked.';
+    if(/\b(start|help|how|demo|try|add|configure)\b/.test(q))text+='\n\nStart with Add part, choose its site and asset, and enter counts and thresholds. Or choose Try demo to load an explicitly simulated kit for one site. Supervisors configure and approve; technicians record movements and approved receipts; HSE Supervisors have read-only parts access.';
+    return response(text,'Workbook history + separately stored demo inventory',[action('Open inventory','parts-tab','inventory',site),action('Open orders','parts-tab','orders',site),action('Open automation','parts-tab','automation',site)]);}
+
+  function answerDowntime(site,q){if(!isFinance())return response('Detailed downtime analysis is restricted to the Supervisor dashboard. Your current pages include Spare Parts and HSE Actions.','Application permission design',[pageAction('parts',site),pageAction('hse',site)]);const d=dataFor(site),causes=[...new Set(d.ev.map(e=>e.cause))].map(c=>[c,total(d.ev.filter(e=>e.cause===c),'stopped_hours')]).sort((a,b)=>b[1]-a[1]);const stages=[['Detection','detect_hours'],['Dispatch','dispatch_hours'],['Parts wait','parts_wait_hours'],['Repair','repair_hours'],['Restart','restart_hours']].map(([label,key])=>[label,total(d.ev,key)]).sort((a,b)=>b[1]-a[1]);let text=`${name(site)} recorded ${fmt(d.hours)} unplanned equipment-hours across ${d.ev.length} events in 2025 (${fmt(d.ev.length?d.hours/d.ev.length:0)} h per event).`;if(causes[0])text+=` Largest cause: ${causes[0][0]}, ${fmt(causes[0][1])} h (${fmt(causes[0][1]/d.hours*100)}%).`;if(stages[0])text+=` Largest delay stage: ${stages[0][0]}, ${fmt(stages[0][1])} h.`;if(/\b(stage|stages|breakdown|bottleneck|bottlenecks)\b/.test(q))text+='\n\n'+stages.map(([n,h])=>n+': '+fmt(h)+' h').join('; ')+'.';text+='\n\nCause categories and delay stages describe the same events; do not add them together.';return response(text,'Events · Unplanned records only',[chartAction('downtime',site),pageAction('parts',site)]);}
   function answerTraining(site,q){const d=dataFor(site),technicians=total(d.sites,'technicians'),hours=total(d.sites,'training_required_hours'),capacity=total(d.sites,'available_project_hours'),o=workbook().options.find(o=>o.option_id==='O6');let text=`${name(site)} ${site==='all'?'have':'has'} ${fmt(technicians,0)} technicians, ${fmt(hours,0)} required training hours, and ${fmt(capacity,0)} available project hours. Training hours are technicians × site training hours per person. The workbook does not provide employee identities, attendance, completion, or configuration-task status.`;if(o)text+=`\n\nO6 (${o.option_name}): ${o.benefit_rule}. Lead time: ${fmt(o.lead_months,0)} month${o.lead_months===1?'':'s'}.`;if(isFinance()&&/\b(cost|budget|setup|configuration|digital|price)\b/.test(q))text+=` Source configuration inputs across selected sites: cleanup ${dollars(total(d.sites,'cleanup_setup_usd'))}; edge setup ${dollars(total(d.sites,'edge_setup_usd'))}; annual edge ${dollars(total(d.sites,'edge_annual_usd'))}. These are workbook options, not approved purchases.`;return response(text,'Assets, Solutions · O6',[pageAction('setup',site)]);}
   function answerQuality(site){const d=dataFor(site),missing=d.sites.reduce((n,s)=>n+(s.readings.quality_counts.Missing||0),0),suspect=d.sites.reduce((n,s)=>n+(s.readings.quality_counts.Suspect||0),0),late=d.sites.reduce((n,s)=>n+(s.readings.delayed_over_1h_count||0),0);return response(`${name(site)} ${site==='all'?'have':'has'} ${fmt(missing,0)} Missing readings, ${fmt(suspect,0)} Suspect readings, and ${fmt(late,0)} readings received more than one hour late in 2025. Network uptime: ${d.sites.map(s=>s.site_name+' '+fmt(s.network_uptime_pct)+'%').join(', ')}.\n\nNetwork uptime measures connectivity, not production availability. Suspect readings are not confirmed equipment failures. Missing values are not treated as zero.`, 'Readings, Assets · 2025',[chartAction('data-quality',site),pageAction('setup',site)]);}
   function answerProduction(site,q,oil=false){if(!isFinance())return response('Production and oil-loss analysis are available in the Supervisor view. I can help you inspect safety, training, and reading quality in your current view.','Application permission design',[pageAction('hse',site),pageAction('setup',site)]);const rows=monthly(site),p=dataFor(site).p,gross=total(p,'gross_deferred_bbl'),recovered=total(p,'recovered_oil_bbl'),produced=total(p,'produced_oil_bbl'),potential=total(p,'potential_oil_bbl');let text=oil?`${name(site)} recorded ${fmt(gross,0)} bbl gross deferred oil and ${fmt(recovered,0)} bbl recovered oil in 2025. Net unrecovered deferral is ${fmt(gross-recovered,0)} bbl (gross deferred − recovered).`:`${name(site)} produced ${fmt(produced,0)} bbl against ${fmt(potential,0)} bbl potential in 2025. Recorded production / potential is ${fmt(potential?produced/potential*100:0)}%.`;if(rows.length){const metric=oil?'net':'produced',first=rows[0],last=rows.at(-1),diff=last[metric]-first[metric];text+=`\n\n${monthLabel(first.month)} to ${monthLabel(last.month)}: ${fmt(first[metric],0)} → ${fmt(last[metric],0)} bbl (${diff>=0?'+':''}${fmt(diff,0)} bbl). This is an endpoint comparison, not proof of a sustained trend.`;}if(oil)text+=' Gross oil deferral and downtime are related measures, not separate benefits to add.';return response(text,'Production · monthly records; calculated totals',[chartAction(oil?'oil-loss':'production',site)]);}
@@ -1169,7 +1548,8 @@ function render(){let requested=location.hash.slice(1)||'dashboard';if(!allowed(
     const labels={hse:'Critical open HSE actions',quality:'Network uptime',parts:'Parts-wait hours',downtime:'Unplanned equipment-hours',financial:'Modeled contribution loss',production:'Produced oil',oil:'Net unrecovered oil deferral'},unit=metric==='quality'?'%':metric==='hse'?'':['oil','production'].includes(metric)?' bbl':' h';
     return response(`${labels[metric]} by site:\n${results.map((r,i)=>`${i+1}. ${r.site.site_name}: ${metric==='financial'?dollars(r.value):fmt(r.value,metric==='hse'?0:1)+unit}`).join('\n')}\n\n${metric==='quality'?'Lowest connectivity appears first.':metric==='hse'?'Equal counts are ties, not a risk-score ranking.':'Largest recorded total appears first; this does not adjust for asset exposure or site size.'}`,metric==='hse'?'HSE · '+workbook().meta.hseAsOf:metric==='quality'?'Assets':['oil','production'].includes(metric)?'Production · 2025':metric==='financial'?'Events, Production · 2025':'Events · 2025',[chartAction(metric==='hse'?'hse':metric==='quality'?'data-quality':metric==='parts'?'parts':metric==='downtime'?'downtime':metric==='financial'?'financial':metric==='production'?'production':'site-comparison','all')]);
   }
-  function answerHelp(){const role=context().role;return response(`I am a browser-local workbook guide. I can explain the site's data, compare sites, describe current charts and forecast assumptions, and open pages or export reports allowed for your ${role} view. I do not use a language model or connect to live systems.\n\nTry: “Which sites have critical HSE actions?”, “Show Arroyo safety”, “Explain missing readings”, or “How much training is required?”${isFinance()?' You can also ask “Compare downtime by site” or “Show future oil loss”.':''}`,'Workbook guide capabilities',[pageAction('dashboard',context().site),pageAction('hse',context().site),pageAction('setup',context().site)]);}
+  function answerHelp(){const role=context().role;return response(`Use Spare Parts to track inventory by site, configure replenishment rules, review requests and record receipts. Dashboard retains the historical charts; HSE Actions retains the safety workflow.\n\nTry: “Show Mesa inventory”, “How does auto-replenishment work?”, “Open orders”, “Compare parts delays by site”, or “Show critical HSE actions”.\n\nI can explain data and open permitted views for your ${role} role. I run locally without a language model, live inventory feed or supplier connection.`, 'Workbook guide capabilities',[pageAction('parts',context().site),pageAction('dashboard',context().site),pageAction('hse',context().site)]);}
+
   function answerFuture(site,topic,q){
     if(['hse','quality','training','parts','access','downtime'].includes(topic))return response(`There is no future ${topic==='hse'?'safety closure':topic==='quality'?'sensor quality':topic==='training'?'training completion':topic==='parts'?'inventory':topic==='downtime'?'downtime':'user access'} series in this interface. I will not invent future records. ${isFinance()?'Supported projections cover oil loss, production, financial impact, and site comparisons.':''}`, 'Historical workbook records',[isFinance()?chartAction('production',site,'future'):pageAction(topic==='training'?'setup':'hse',site)]);
     if(!isFinance())return response('Operational forecasts are restricted to the Supervisor view. Your current view includes historical safety and training records.','Application permission design',[pageAction('hse',site)]);
@@ -1180,9 +1560,9 @@ function render(){let requested=location.hash.slice(1)||'dashboard';if(!allowed(
     if(/\b(how|method|calculated|calculate|accuracy|accurate|validation|backtest|reliable|error|range|confidence|why)\b/.test(q)&&validation)text+=`\n\nA January–September 2025 fit was checked against October–December 2025: ${fmt(validation.wape_pct)}% WAPE for ${topic==='financial'?'contribution loss':topic==='oil'?'net lost oil':'produced oil'}. WAPE = total absolute error ÷ total actual. This is only three holdout months, not a guaranteed accuracy rate. The model’s historical variability is descriptive, not a confidence interval.`;
     return response(text,'Production, Assets, Events · source-derived baseline projection',[chartAction(id,site,'future')]);
   }
-  function routeFor(topic){return {hse:'hse',downtime:'downtime',parts:'parts',training:'setup',access:'access',help:'dashboard',comparison:'dashboard',quality:'setup'}[topic];}
+  function routeFor(topic){return {hse:'hse',parts:'parts',help:'dashboard',comparison:'dashboard',downtime:'dashboard',quality:'dashboard',access:'parts'}[topic];}
   function chartFor(topic){return {oil:'oil-loss',production:'production',financial:'financial',downtime:'downtime',hse:'hse',quality:'data-quality',comparison:'site-comparison',parts:'parts'}[topic];}
-  function exportFor(topic){return {hse:'hse',downtime:'downtime',parts:'parts',training:'setup',help:'operations',comparison:'operations'}[topic];}
+  function exportFor(topic){return {hse:'hse',parts:'parts',help:'operations',comparison:'operations'}[topic];}
   function recordAnswer(q){
     const match=(rows,key)=>rows.find(r=>new RegExp('\\b'+r[key].toLowerCase()+'\\b').test(q));
     let r=match(workbook().hse,'hse_id');
@@ -1190,13 +1570,14 @@ function render(){let requested=location.hash.slice(1)||'dashboard';if(!allowed(
     r=match(workbook().assets,'asset_id');
     if(r)return response(`${r.asset_id} · ${name(r.site_id)} · ${r.asset_type}. Latest source observation: ${r.latest.observed_utc}; recorded state ${r.latest.operating_state}; quality ${r.latest.quality}. This historical observation is not current equipment status.`, 'Assets; Readings · source observation',[action('View '+r.asset_id,'record',r.asset_id,r.site_id,{recordKind:'asset'})]);
     r=match(workbook().events,'event_id');
-    if(r){if(!permittedPage('downtime')&&!(permittedPage('parts')&&r.parts_wait_hours>0))return response('This event is outside the record access available in your current role.','Application permission design');return response(`${r.event_id} · ${name(r.site_id)} · ${r.asset_id}. ${r.event_type} event: ${r.cause}; ${fmt(r.stopped_hours)} stopped hours and ${fmt(r.parts_wait_hours)} parts-wait hours. Started ${r.start_utc}.`, 'Events · row '+r.source.row,[action('View '+r.event_id,'record',r.event_id,r.site_id,{recordKind:'event'})]);}
+    if(r){if(context().role!=='Supervisor'&&!(permittedPage('parts')&&r.parts_wait_hours>0))return response('This event is outside the record access available in your current role.','Application permission design');return response(`${r.event_id} · ${name(r.site_id)} · ${r.asset_id}. ${r.event_type} event: ${r.cause}; ${fmt(r.stopped_hours)} stopped hours and ${fmt(r.parts_wait_hours)} parts-wait hours. Started ${r.start_utc}.`, 'Events · row '+r.source.row,[action('View '+r.event_id,'record',r.event_id,r.site_id,{recordKind:'event'})]);}
     return null;
   }
   function ask(text){
     const raw=String(text||'').trim().slice(0,600),q=normalize(raw),mentioned=chosenSites(q);if(!q)return answerHelp();
-    if(/\b(change|switch|grant|become|set|make|unlock)\b.*\b(role|supervisor|technician|permission|admin|access)\b/.test(q)||/\b(ignore|bypass|override)\b.*\b(permission|role|restriction|guard|rule)\b/.test(q))return response('I cannot change roles, grant access, or bypass permissions. I only navigate and report within your current view.','Application permission design',[pageAction('access',context().site)]);
-    if(/\b(approve|authorize|delete|purchase|order|verify closure|close action|mark complete|update source|edit source|write source|start equipment|stop equipment)\b/.test(q))return response('I cannot modify workbook records, authorize operations, close safety actions, purchase parts, or control equipment. I can open the relevant source records for review.','Read-only workbook interface',[pageAction(/\b(hse|safety|closure|action)\b/.test(q)?'hse':'parts',context().site)]);
+    if(/\b(change|switch|grant|become|set|make|unlock)\b.*\b(role|supervisor|technician|permission|admin|access)\b/.test(q)||/\b(ignore|bypass|override)\b.*\b(permission|role|restriction|guard|rule)\b/.test(q))return response('I cannot change roles, grant access, or bypass permissions. I only navigate and report within your current view.','Application permission design',[pageAction('parts',context().site)]);
+    if(/\b(approve|authorize|delete|verify closure|close action|mark complete|update source|edit source|write source|start equipment|stop equipment)\b/.test(q)||/^(please )?(purchase|buy|place|submit|cancel|receive|issue|adjust)\b/.test(q))return response('Use the relevant demo workflow to record stock movements, review requests or verify safety work. I can explain and navigate, but cannot approve purchases, modify workbook records or operate equipment.','Guide actions are read-only',[pageAction(/\b(hse|safety|closure|action)\b/.test(q)?'hse':'parts',context().site)]);
+    if(/\b(export|download)\b/.test(q)&&/\b(inventory|orders?|requests?|receipts?)\b/.test(q))return response('Demo inventory and request exports are not available. Use Spare Parts to inspect those records. The workbook report contains historical site metrics only.','Application export scope',[pageAction('parts',context().site)]);
     const record=recordAnswer(q);if(record){if(/^(please\s+)?(show|open|review)\b/.test(q)&&record.actions[0])execute(record.actions[0]);return record;}
     let topic=topicOf(q);const future=/\b(future|forecast|prediction|predict|projected|projection|next year|2026|2027)\b/.test(q)&&!(/\b(hse|snapshot|source|date)\b/.test(q)&&! /\b(future|forecast|predict)\b/.test(q));
     if(future&&/\b202[7-9]\b|\b20[3-9][0-9]\b/.test(q))return response('Only the fixed January–March 2026 historical-baseline projection is available, using data through December 31, 2025. I cannot supply a different forecast year or invent current inputs.','Projection methodology',[chartAction('production',context().site,'future')]);
@@ -1204,7 +1585,7 @@ function render(){let requested=location.hash.slice(1)||'dashboard';if(!allowed(
     if(!topic&&(future||mentioned.length||/\b(what about|and that|more|explain it|why|how calculated)\b/.test(q)))topic=lastTopic;
     if(!topic&&/\b(show|open|switch|select|filter)\b/.test(q)&&mentioned.length)topic='help';
     const site=mentioned.length===1?mentioned[0]:mentioned.length>1?'all':lastScope&&/\b(what about|and that|more|explain it|future|forecast)\b/.test(q)?lastScope:context().site;
-    if(!topic)return response('I could not match that request to this workbook or the site controls. I can help with HSE, downtime, parts readiness, training, reading quality, permitted charts, source dates, and exports. Try asking one question about one of those areas.','Browser-local guide; no general-purpose model',[pageAction('dashboard',context().site)]);
+    if(!topic)return response('I could not match that request to this workbook or the site controls. I can help with Spare Parts inventory, order rules and receipts, HSE, historical charts, source dates, and permitted exports. Try asking one question about one of those areas.','Browser-local guide; no general-purpose model',[pageAction('dashboard',context().site)]);
     lastTopic=topic;lastScope=site;
     let result;
     const compare=/\b(compare|comparison|versus|vs|rank|ranking|worst|best|which site|highest|lowest)\b/.test(q)||mentioned.length>1;
@@ -1215,6 +1596,7 @@ function render(){let requested=location.hash.slice(1)||'dashboard';if(!allowed(
       if(/\b(export|download)\b/.test(q)){const type=exportFor(topic);if(type&&canExport(type))command=action('Export report','export',type,site);else result=response('That export is not available for your role or this data view. I cannot create a broader export or bypass the restriction.','Application permission design',result.actions);}
       else if(/\b(switch|select|filter)\b/.test(q)&&mentioned.length===1)command=action('Select '+name(site),'site',site,site);
       else if(topic==='source')command=action('View source details','source');
+      else if(topic==='parts'&&!/\b(chart|graph|trend|compare|comparison)\b/.test(q))command=action('Open Spare Parts','parts-tab',/\b(order|orders|receipt|receipts)\b/.test(q)?'orders':/\b(automation|reorder|rule|rules|auto)\b/.test(q)?'automation':'inventory',site);
       else if(topic==='help'&&/\b(chart|charts|dashboard|overview)\b/.test(q))command=action('Open chart overview','overview','dashboard',site);
       else if(topic==='hse'&&/\b(closed|open|severity [1-5])\b/.test(q)&&permittedPage('hse'))command=action('Filter HSE actions','hse-filter','hse',site,{status:/\bclosed\b/.test(q)?'Closed':/\bopen\b/.test(q)?'Open':'all',severity:q.match(/\bseverity ([1-5])\b/)?.[1]||'all'});
       else {const id=chartFor(topic),page=routeFor(topic);if(id&&(future||/\b(chart|graph|trend|oil|production|financial|forecast)\b/.test(q))&&chartAccess(id))command=chartAction(id,site,future?'future':'current');else if(page&&permittedPage(page))command=pageAction(page,site);}
@@ -1225,6 +1607,7 @@ function render(){let requested=location.hash.slice(1)||'dashboard';if(!allowed(
   function execute(a){
     if(!a)return false;
     if(a.kind==='page'&&!permittedPage(a.id))return false;
+    if(a.kind==='parts-tab'&&(!permittedPage('parts')||!['inventory','orders','automation'].includes(a.id)))return false;
     if(a.kind==='chart'&&!chartAccess(a.id))return false;
     if(a.kind==='chart'&&a.period==='future'&&!['oil-loss','production','financial','site-comparison'].includes(a.id))return false;
     if(a.kind==='hse-filter'&&!permittedPage('hse'))return false;
@@ -1232,6 +1615,7 @@ function render(){let requested=location.hash.slice(1)||'dashboard';if(!allowed(
     if(a.site&&a.site!=='all'&&!workbook().sites.some(s=>s.site_id===a.site))return false;
     if(a.site&&a.site!==context().site)changeSite(a.site);
     if(a.kind==='page'){location.hash=a.id;return true;}
+    if(a.kind==='parts-tab'){location.hash='parts';root.SpareParts.showTab(a.id);return true;}
     if(a.kind==='overview'){if(typeof root.AnalyticsUI?.showOverview==='function')root.AnalyticsUI.showOverview();else location.hash='dashboard';return true;}
     if(a.kind==='hse-filter'){state.hseStatus=['Open','Closed','all'].includes(a.status)?a.status:'all';state.hseSeverity=['1','2','3','4','5'].includes(a.severity)?a.severity:'all';state.page=0;if(location.hash==='#hse')render();else location.hash='hse';return true;}
     if(a.kind==='site'){changeSite(a.id);return true;}
@@ -1245,7 +1629,7 @@ function render(){let requested=location.hash.slice(1)||'dashboard';if(!allowed(
     const item=safeText('div','', 'assist-message '+type);item.append(safeText('div',text,'assist-body'));if(source)item.append(safeText('div','Source: '+source,'assist-source'));
     if(actions.length){const group=safeText('div','','assist-actions');actions.forEach(a=>{const button=safeText('button',a.label);button.type='button';button.addEventListener('click',()=>{if(!execute(a))append('This action is unavailable in the current view.');});group.append(button);});item.append(group);}log.append(item);while(log.children.length>24)log.firstElementChild.remove();log.scrollTop=log.scrollHeight;
   }
-  function clear(){if(!initialized)return;log.replaceChildren();lastTopic=null;lastScope=null;const c=context();previousContext=c.role+'|'+c.site;panelContext.textContent=c.role+' · '+name(c.site);append('Ask about the workbook, site pages, or your permitted charts. I can open views and export allowed reports. I run locally and do not use a language model.');}
+  function clear(){if(!initialized)return;log.replaceChildren();lastTopic=null;lastScope=null;const c=context();previousContext=c.role+'|'+c.site;panelContext.textContent=c.role+' · '+name(c.site);append('Ask about spare parts, orders, site history or HSE actions. I can explain the workflow and open permitted views. I run locally and do not send supplier purchases.');}
   function submit(text){if(!String(text).trim())return;append(String(text).slice(0,600),'user');let result;try{result=ask(text);}catch(error){result=response('I could not complete that request. Please ask about a specific site metric or page. No source records were changed.');}append(result.text,'bot',result.source,result.actions);input.value='';input.focus();return result;}
   function open(){init();panel.hidden=false;launcher.setAttribute('aria-expanded','true');input.focus();}
   function close(){panel.hidden=true;launcher.setAttribute('aria-expanded','false');launcher.focus();}
@@ -1364,17 +1748,19 @@ function toast(message){const t=document.getElementById('toast');t.textContent=m
 function openModal(title,body){document.getElementById('modal-title').textContent=title;document.getElementById('modal-body').innerHTML=body;if(!modal.open)modal.showModal();}
 function detailsList(values){return `<dl class="detail-grid">${values.map(([label,value])=>`<div><dt>${esc(label)}</dt><dd>${esc(value??'Not supplied')}</dd></div>`).join('')}</dl>`;}
 function sourceLine(record){const s=record.source;return s?.sheet?`<div class="source-line">${esc(DATA.meta.file)} · ${esc(s.sheet)} · row ${s.row??'see linked records'}</div>`:'';}
-function details(){const removed=DATA.meta.cleaning.filter(s=>s.verifiedDuplicateRowsRemoved);openModal('Data source',`<p><strong>${esc(DATA.meta.file)}</strong></p><p>2025 operating records. HSE status: ${date(DATA.meta.hseAsOf)}. All six sites are included. These are historical case records; no live feed is connected.</p><p>Business values come only from the workbook. Totals, shares and training hours are calculated from those records. Future chart views are Jan–Mar 2026 baseline projections from 2025 inputs, not actual or live results. The site assistant is a browser-local workbook guide with supported questions and actions; it has no language-model or live-system connection. Source details are available on each record.</p>${table(['Sheet','Duplicate rows removed'],removed.map(s=>`<tr><td>${esc(s.sheet)}</td><td>${num(s.verifiedDuplicateRowsRemoved,0)}</td></tr>`))}<p class="source-line">Missing sensor values and pending invoice amounts remain unavailable. Inventory balances and training completion were not supplied.</p><p><strong>Role views:</strong> this presentation interface restricts pages and actions. The selector is not user authentication. Production use requires identity-based server authorization and a connected source.</p><p class="source-line">Workbook SHA-256: ${DATA.meta.sha256}</p>`);}
+function details(){const removed=DATA.meta.cleaning.filter(s=>s.verifiedDuplicateRowsRemoved);openModal('Data source',`<p><strong>${esc(DATA.meta.file)}</strong></p><p>2025 operating records. HSE status: ${date(DATA.meta.hseAsOf)}. All six sites are included. These are historical case records; no live feed is connected.</p><p>Historical business values come only from the workbook. Spare Parts inventory, reorder rules, order requests and receipts are separately labeled browser-local demo records. Auto-replenishment creates requests for supervisor review; it does not send purchases to suppliers. Future chart views are Jan–Mar 2026 baseline projections from 2025 inputs, not actual or live results. The site assistant is a browser-local workbook guide with supported questions and actions; it has no language-model or live-system connection. Source details are available on each record.</p>${table(['Sheet','Duplicate rows removed'],removed.map(s=>`<tr><td>${esc(s.sheet)}</td><td>${num(s.verifiedDuplicateRowsRemoved,0)}</td></tr>`))}<p class="source-line">Missing sensor values and pending invoice amounts remain unavailable. Inventory balances and training completion were not supplied.</p><p><strong>Role views:</strong> this presentation interface restricts pages and actions. The selector is not user authentication. Production use requires identity-based server authorization and a connected source.</p><p class="source-line">Workbook SHA-256: ${DATA.meta.sha256}</p>`);}
 function withinScope(r){return r&&(state.site==='all'||r.site_id===state.site);}
 function openRecord(kind,id){
   let r,fields=[];
+  if(kind==='spare'&&allowed('parts')){if(!window.PartsStore.getItems(state.site).some(r=>r.id===id))return false;window.SpareParts.openItem(id);return true;}
+  if(kind==='spare-order'&&allowed('parts')){if(!window.PartsStore.getOrders(state.site).some(r=>r.id===id))return false;window.SpareParts.openOrder(id);return true;}
   if(kind==='hse'&&allowed('hse')){
     return window.HSEActionDetails.open(id);
   }
   if(kind==='event'&&(allowed('downtime')||allowed('parts'))){
     r=byId(DATA.events,id,'event_id');if(!withinScope(r))return false;
     // Field views can inspect only events relevant to parts readiness.
-    if(state.role==='Technician'&&!(r.parts_wait_hours>0))return false;
+    if(state.role!=='Supervisor'&&!(r.parts_wait_hours>0))return false;
     fields=[['Site',siteName(r.site_id)],['Asset',r.asset_id],['Event type',r.event_type],['Cause',r.cause],['Started (UTC)',r.start_utc],['Ended (UTC)',r.end_utc],['Downtime',num(r.stopped_hours)+' h'],['Parts wait',num(r.parts_wait_hours)+' h'],['Work order',r.work_order_id],['Technician note',r.technician_note]];
     if(PERMISSIONS[state.role].finance)fields.push(['Parts invoice',r.parts_usd==null?'Not available':money(r.parts_usd)],['Cost status',r.cost_status]);
     openModal(r.event_id+' · '+r.asset_id,detailsList(fields)+sourceLine(r));return true;
@@ -1386,12 +1772,11 @@ function openRecord(kind,id){
   }
   if(kind==='site'){
     r=byId(DATA.sites,id,'site_id');if(!withinScope(r))return false;
-    fields=[['Site',r.site_name],['Network uptime',num(r.network_uptime_pct)+'%'],['Local spare fill',num(r.spare_fill_pct,0)+'%'],['Technicians',r.technicians],['Training per technician',r.training_hours_per_person+' h'],['Total training requirement',r.training_required_hours+' h'],['Project hours available',r.available_project_hours+' h']];
-    if(PERMISSIONS[state.role].finance)fields.push(['Cleanup setup',money(r.cleanup_setup_usd)],['Edge setup',money(r.edge_setup_usd)],['Annual edge cost',money(r.edge_annual_usd)]);
+    fields=[['Site',r.site_name],['Local spare fill',num(r.spare_fill_pct,0)+'%'],['Source assets',r.asset_ids.join(', ')],['Parts-wait hours (2025)',num(sum(DATA.events.filter(e=>e.site_id===r.site_id&&e.event_type==='Unplanned'),'parts_wait_hours'))+' h'],['Part catalog / stock quantities','Not supplied in workbook'],['Supplier / order records','Not supplied in workbook']];
     openModal(r.site_name,detailsList(fields)+`<div class="source-line">Assets sheet · ${r.asset_ids.join(', ')}. Site-level values counted once.</div>`);return true;
   }
-  if(kind==='option'&&allowed('setup')){
-    r=byId(DATA.options,id,'option_id');if(!r||id!=='O6')return false;
+  if(kind==='option'&&allowed('parts')){
+    r=byId(DATA.options,id,'option_id');if(!r||id!=='O4')return false;
     fields=[['Option',r.option_name],['Applies to',r.billing_unit],['Lead time',r.lead_months+' month'],['Requirement',r.prerequisite],['Workbook rule',r.benefit_rule]];
     if(PERMISSIONS[state.role].finance)fields.push(['Setup per site',money(r.setup_usd)],['Annual per site',money(r.annual_usd)]);
     openModal(r.option_id+' · '+r.option_name,detailsList(fields)+sourceLine(r));return true;
@@ -1418,14 +1803,18 @@ function exportReport(type){
   const csv=[headers,...rows].map(row=>row.map(csvCell).join(',')).join('\r\n');const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`lone-mesa-${type}-${state.site}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('Workbook report exported.');return true;
 }
 function clearSearch(){document.getElementById('search').value='';document.getElementById('search-results').hidden=true;document.getElementById('search-results').innerHTML='';}
-function changeSite(id){if(id!=='all'&&!byId(DATA.sites,id,'site_id'))return;state.site=id;state.asset='all';state.page=0;modal.close();clearSearch();saveView();render();window.dispatchEvent(new CustomEvent('viewchange'));}
-function changeRole(role){window.AnalyticsUI.resetForRole();state.role=ROLES.includes(role)?role:'Technician';state.asset='all';state.page=0;modal.close();document.getElementById('modal-body').innerHTML='';clearSearch();saveView();render();window.dispatchEvent(new CustomEvent('viewchange'));}
+function changeSite(id){window.SpareParts?.resetView();if(id!=='all'&&!byId(DATA.sites,id,'site_id'))return;state.site=id;state.asset='all';state.page=0;modal.close();clearSearch();saveView();render();window.dispatchEvent(new CustomEvent('viewchange'));}
+function changeRole(role){window.SpareParts?.resetView();window.AnalyticsUI.resetForRole();state.role=ROLES.includes(role)?role:'Technician';state.asset='all';state.page=0;modal.close();document.getElementById('modal-body').innerHTML='';clearSearch();saveView();render();window.dispatchEvent(new CustomEvent('viewchange'));}
 function search(query){const results=document.getElementById('search-results');const q=query.trim().toLowerCase().slice(0,100);if(!q){results.hidden=true;results.innerHTML='';return;}const records=[];
-  for(const [id,,label] of PAGES.filter(p=>allowed(p[0]))){const name=id==='setup'&&state.role==='Technician'?'Training':label;if(name.toLowerCase().includes(q))records.push({kind:'page',id,label:name});}
+  for(const [id,,label] of PAGES.filter(p=>allowed(p[0]))){const name=label;if(name.toLowerCase().includes(q))records.push({kind:'page',id,label:name});}
   for(const s of DATA.sites)if((s.site_name+' '+s.site_id).toLowerCase().includes(q))records.push({kind:'site-filter',id:s.site_id,label:s.site_name});
   for(const a of selectedAssets())if((a.asset_id+' '+a.asset_type).toLowerCase().includes(q))records.push({kind:'asset',id:a.asset_id,label:a.asset_id+' · '+a.asset_type});
+  if(window.PartsStore&&allowed('parts')){
+    for(const item of window.PartsStore.getItems(state.site))if((item.sku+' '+item.name).toLowerCase().includes(q))records.push({kind:'spare',id:item.id,label:item.sku+' · '+item.name+' · Demo'});
+    for(const order of window.PartsStore.getOrders(state.site))if(order.id.toLowerCase().includes(q))records.push({kind:'spare-order',id:order.id,label:order.id+' · '+siteName(order.site_id)+' · Demo order'});
+  }
   for(const h of hazards())if((h.hse_id+' '+h.hazard).toLowerCase().includes(q))records.push({kind:'hse',id:h.hse_id,label:h.hse_id+' · '+h.hazard});
-  if(allowed('parts')||allowed('downtime'))for(const e of events().filter(e=>state.role!=='Technician'||e.parts_wait_hours>0))if((e.event_id+' '+e.work_order_id).toLowerCase().includes(q))records.push({kind:'event',id:e.event_id,label:e.event_id+' · '+siteName(e.site_id)});
+  if(allowed('parts')||allowed('downtime'))for(const e of events().filter(e=>state.role==='Supervisor'||e.parts_wait_hours>0))if((e.event_id+' '+e.work_order_id).toLowerCase().includes(q))records.push({kind:'event',id:e.event_id,label:e.event_id+' · '+siteName(e.site_id)});
   results.innerHTML=records.length?records.slice(0,8).map(r=>`<button data-action="search-result" data-kind="${r.kind}" data-id="${r.id}">${esc(r.label)}</button>`).join(''):'<div class="empty">No matching records</div>';results.hidden=false;
 }
 document.addEventListener('click',e=>{

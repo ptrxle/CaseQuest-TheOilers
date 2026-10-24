@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "offlineSelfContained": true,
+  "eagerInventoryLoaded": true,
+  "eventGuideAccess": true,
+  "unsupportedDemoExportsCorrect": true,
+  "pageErrors": []
+}

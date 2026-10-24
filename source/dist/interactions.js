@@ -3,17 +3,19 @@ function toast(message){const t=document.getElementById('toast');t.textContent=m
 function openModal(title,body){document.getElementById('modal-title').textContent=title;document.getElementById('modal-body').innerHTML=body;if(!modal.open)modal.showModal();}
 function detailsList(values){return `<dl class="detail-grid">${values.map(([label,value])=>`<div><dt>${esc(label)}</dt><dd>${esc(value??'Not supplied')}</dd></div>`).join('')}</dl>`;}
 function sourceLine(record){const s=record.source;return s?.sheet?`<div class="source-line">${esc(DATA.meta.file)} · ${esc(s.sheet)} · row ${s.row??'see linked records'}</div>`:'';}
-function details(){const removed=DATA.meta.cleaning.filter(s=>s.verifiedDuplicateRowsRemoved);openModal('Data source',`<p><strong>${esc(DATA.meta.file)}</strong></p><p>2025 operating records. HSE status: ${date(DATA.meta.hseAsOf)}. All six sites are included. These are historical case records; no live feed is connected.</p><p>Business values come only from the workbook. Totals, shares and training hours are calculated from those records. Future chart views are Jan–Mar 2026 baseline projections from 2025 inputs, not actual or live results. The site assistant is a browser-local workbook guide with supported questions and actions; it has no language-model or live-system connection. Source details are available on each record.</p>${table(['Sheet','Duplicate rows removed'],removed.map(s=>`<tr><td>${esc(s.sheet)}</td><td>${num(s.verifiedDuplicateRowsRemoved,0)}</td></tr>`))}<p class="source-line">Missing sensor values and pending invoice amounts remain unavailable. Inventory balances and training completion were not supplied.</p><p><strong>Role views:</strong> this presentation interface restricts pages and actions. The selector is not user authentication. Production use requires identity-based server authorization and a connected source.</p><p class="source-line">Workbook SHA-256: ${DATA.meta.sha256}</p>`);}
+function details(){const removed=DATA.meta.cleaning.filter(s=>s.verifiedDuplicateRowsRemoved);openModal('Data source',`<p><strong>${esc(DATA.meta.file)}</strong></p><p>2025 operating records. HSE status: ${date(DATA.meta.hseAsOf)}. All six sites are included. These are historical case records; no live feed is connected.</p><p>Historical business values come only from the workbook. Spare Parts inventory, reorder rules, order requests and receipts are separately labeled browser-local demo records. Auto-replenishment creates requests for supervisor review; it does not send purchases to suppliers. Future chart views are Jan–Mar 2026 baseline projections from 2025 inputs, not actual or live results. The site assistant is a browser-local workbook guide with supported questions and actions; it has no language-model or live-system connection. Source details are available on each record.</p>${table(['Sheet','Duplicate rows removed'],removed.map(s=>`<tr><td>${esc(s.sheet)}</td><td>${num(s.verifiedDuplicateRowsRemoved,0)}</td></tr>`))}<p class="source-line">Missing sensor values and pending invoice amounts remain unavailable. Inventory balances and training completion were not supplied.</p><p><strong>Role views:</strong> this presentation interface restricts pages and actions. The selector is not user authentication. Production use requires identity-based server authorization and a connected source.</p><p class="source-line">Workbook SHA-256: ${DATA.meta.sha256}</p>`);}
 function withinScope(r){return r&&(state.site==='all'||r.site_id===state.site);}
 function openRecord(kind,id){
   let r,fields=[];
+  if(kind==='spare'&&allowed('parts')){if(!window.PartsStore.getItems(state.site).some(r=>r.id===id))return false;window.SpareParts.openItem(id);return true;}
+  if(kind==='spare-order'&&allowed('parts')){if(!window.PartsStore.getOrders(state.site).some(r=>r.id===id))return false;window.SpareParts.openOrder(id);return true;}
   if(kind==='hse'&&allowed('hse')){
     return window.HSEActionDetails.open(id);
   }
   if(kind==='event'&&(allowed('downtime')||allowed('parts'))){
     r=byId(DATA.events,id,'event_id');if(!withinScope(r))return false;
     // Field views can inspect only events relevant to parts readiness.
-    if(state.role==='Technician'&&!(r.parts_wait_hours>0))return false;
+    if(state.role!=='Supervisor'&&!(r.parts_wait_hours>0))return false;
     fields=[['Site',siteName(r.site_id)],['Asset',r.asset_id],['Event type',r.event_type],['Cause',r.cause],['Started (UTC)',r.start_utc],['Ended (UTC)',r.end_utc],['Downtime',num(r.stopped_hours)+' h'],['Parts wait',num(r.parts_wait_hours)+' h'],['Work order',r.work_order_id],['Technician note',r.technician_note]];
     if(PERMISSIONS[state.role].finance)fields.push(['Parts invoice',r.parts_usd==null?'Not available':money(r.parts_usd)],['Cost status',r.cost_status]);
     openModal(r.event_id+' · '+r.asset_id,detailsList(fields)+sourceLine(r));return true;
@@ -25,12 +27,11 @@ function openRecord(kind,id){
   }
   if(kind==='site'){
     r=byId(DATA.sites,id,'site_id');if(!withinScope(r))return false;
-    fields=[['Site',r.site_name],['Network uptime',num(r.network_uptime_pct)+'%'],['Local spare fill',num(r.spare_fill_pct,0)+'%'],['Technicians',r.technicians],['Training per technician',r.training_hours_per_person+' h'],['Total training requirement',r.training_required_hours+' h'],['Project hours available',r.available_project_hours+' h']];
-    if(PERMISSIONS[state.role].finance)fields.push(['Cleanup setup',money(r.cleanup_setup_usd)],['Edge setup',money(r.edge_setup_usd)],['Annual edge cost',money(r.edge_annual_usd)]);
+    fields=[['Site',r.site_name],['Local spare fill',num(r.spare_fill_pct,0)+'%'],['Source assets',r.asset_ids.join(', ')],['Parts-wait hours (2025)',num(sum(DATA.events.filter(e=>e.site_id===r.site_id&&e.event_type==='Unplanned'),'parts_wait_hours'))+' h'],['Part catalog / stock quantities','Not supplied in workbook'],['Supplier / order records','Not supplied in workbook']];
     openModal(r.site_name,detailsList(fields)+`<div class="source-line">Assets sheet · ${r.asset_ids.join(', ')}. Site-level values counted once.</div>`);return true;
   }
-  if(kind==='option'&&allowed('setup')){
-    r=byId(DATA.options,id,'option_id');if(!r||id!=='O6')return false;
+  if(kind==='option'&&allowed('parts')){
+    r=byId(DATA.options,id,'option_id');if(!r||id!=='O4')return false;
     fields=[['Option',r.option_name],['Applies to',r.billing_unit],['Lead time',r.lead_months+' month'],['Requirement',r.prerequisite],['Workbook rule',r.benefit_rule]];
     if(PERMISSIONS[state.role].finance)fields.push(['Setup per site',money(r.setup_usd)],['Annual per site',money(r.annual_usd)]);
     openModal(r.option_id+' · '+r.option_name,detailsList(fields)+sourceLine(r));return true;
@@ -57,14 +58,18 @@ function exportReport(type){
   const csv=[headers,...rows].map(row=>row.map(csvCell).join(',')).join('\r\n');const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`lone-mesa-${type}-${state.site}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('Workbook report exported.');return true;
 }
 function clearSearch(){document.getElementById('search').value='';document.getElementById('search-results').hidden=true;document.getElementById('search-results').innerHTML='';}
-function changeSite(id){if(id!=='all'&&!byId(DATA.sites,id,'site_id'))return;state.site=id;state.asset='all';state.page=0;modal.close();clearSearch();saveView();render();window.dispatchEvent(new CustomEvent('viewchange'));}
-function changeRole(role){window.AnalyticsUI.resetForRole();state.role=ROLES.includes(role)?role:'Technician';state.asset='all';state.page=0;modal.close();document.getElementById('modal-body').innerHTML='';clearSearch();saveView();render();window.dispatchEvent(new CustomEvent('viewchange'));}
+function changeSite(id){window.SpareParts?.resetView();if(id!=='all'&&!byId(DATA.sites,id,'site_id'))return;state.site=id;state.asset='all';state.page=0;modal.close();clearSearch();saveView();render();window.dispatchEvent(new CustomEvent('viewchange'));}
+function changeRole(role){window.SpareParts?.resetView();window.AnalyticsUI.resetForRole();state.role=ROLES.includes(role)?role:'Technician';state.asset='all';state.page=0;modal.close();document.getElementById('modal-body').innerHTML='';clearSearch();saveView();render();window.dispatchEvent(new CustomEvent('viewchange'));}
 function search(query){const results=document.getElementById('search-results');const q=query.trim().toLowerCase().slice(0,100);if(!q){results.hidden=true;results.innerHTML='';return;}const records=[];
-  for(const [id,,label] of PAGES.filter(p=>allowed(p[0]))){const name=id==='setup'&&state.role==='Technician'?'Training':label;if(name.toLowerCase().includes(q))records.push({kind:'page',id,label:name});}
+  for(const [id,,label] of PAGES.filter(p=>allowed(p[0]))){const name=label;if(name.toLowerCase().includes(q))records.push({kind:'page',id,label:name});}
   for(const s of DATA.sites)if((s.site_name+' '+s.site_id).toLowerCase().includes(q))records.push({kind:'site-filter',id:s.site_id,label:s.site_name});
   for(const a of selectedAssets())if((a.asset_id+' '+a.asset_type).toLowerCase().includes(q))records.push({kind:'asset',id:a.asset_id,label:a.asset_id+' · '+a.asset_type});
+  if(window.PartsStore&&allowed('parts')){
+    for(const item of window.PartsStore.getItems(state.site))if((item.sku+' '+item.name).toLowerCase().includes(q))records.push({kind:'spare',id:item.id,label:item.sku+' · '+item.name+' · Demo'});
+    for(const order of window.PartsStore.getOrders(state.site))if(order.id.toLowerCase().includes(q))records.push({kind:'spare-order',id:order.id,label:order.id+' · '+siteName(order.site_id)+' · Demo order'});
+  }
   for(const h of hazards())if((h.hse_id+' '+h.hazard).toLowerCase().includes(q))records.push({kind:'hse',id:h.hse_id,label:h.hse_id+' · '+h.hazard});
-  if(allowed('parts')||allowed('downtime'))for(const e of events().filter(e=>state.role!=='Technician'||e.parts_wait_hours>0))if((e.event_id+' '+e.work_order_id).toLowerCase().includes(q))records.push({kind:'event',id:e.event_id,label:e.event_id+' · '+siteName(e.site_id)});
+  if(allowed('parts')||allowed('downtime'))for(const e of events().filter(e=>state.role==='Supervisor'||e.parts_wait_hours>0))if((e.event_id+' '+e.work_order_id).toLowerCase().includes(q))records.push({kind:'event',id:e.event_id,label:e.event_id+' · '+siteName(e.site_id)});
   results.innerHTML=records.length?records.slice(0,8).map(r=>`<button data-action="search-result" data-kind="${r.kind}" data-id="${r.id}">${esc(r.label)}</button>`).join(''):'<div class="empty">No matching records</div>';results.hidden=false;
 }
 document.addEventListener('click',e=>{
