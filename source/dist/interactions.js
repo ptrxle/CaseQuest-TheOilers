@@ -66,7 +66,7 @@ function search(query){const results=document.getElementById('search-results');c
     for(const item of window.PartsStore.getItems(state.site))if((item.sku+' '+item.name).toLowerCase().includes(q))records.push({kind:'spare',id:item.id,label:item.sku+' · '+item.name+' · Demo'});
     for(const order of window.PartsStore.getOrders(state.site))if(order.id.toLowerCase().includes(q))records.push({kind:'spare-order',id:order.id,label:order.id+' · '+siteName(order.site_id)+' · Demo order'});
   }
-  for(const h of hazards())if((h.hse_id+' '+h.hazard).toLowerCase().includes(q))records.push({kind:'hse',id:h.hse_id,label:h.hse_id+' · '+h.hazard});
+  for(const h of scoped(window.HSEActionDetails?.records()||DATA.hse))if((h.hse_id+' '+h.hazard).toLowerCase().includes(q))records.push({kind:'hse',id:h.hse_id,label:h.hse_id+' · '+h.hazard});
   if(allowed('parts')||allowed('downtime'))for(const e of events())if((e.event_id+' '+e.work_order_id).toLowerCase().includes(q))records.push({kind:'event',id:e.event_id,label:e.event_id+' · '+siteName(e.site_id)});
   results.innerHTML=records.length?records.slice(0,8).map(r=>`<button data-action="search-result" data-kind="${r.kind}" data-id="${r.id}">${esc(r.label)}</button>`).join(''):'<div class="empty">No matching records</div>';results.hidden=false;
 }

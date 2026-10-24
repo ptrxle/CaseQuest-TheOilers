@@ -6,7 +6,7 @@
 
 - **Overview:** an Arroyo-first historical dashboard above the working inventory tracker. Source evidence shows monthly parts waits, asset priorities and compact comparisons with the other five sites. The tracker includes stock status, request progress, inventory, orders and site automation.
 - **Dashboard:** a larger Arroyo spotlight explains the priority, compares all six sites, shows monthly waits and equipment groups, and displays potential HSE severity. The O4 card is explicitly a case scenario. Existing oil, production, financial and quality charts are retained under More operational charts.
-- **HSE Actions:** the existing source records, simulated completion/verification workflow and site critical hold remain intact. Arroyo links open H019 and H020.
+- **HSE Actions:** workbook records remain read-only. Add HSE Action opens a form with Fill demo values, explicit submission and a separate Demo actions list. New actions support the existing completion/verification workflow and can be deleted after confirmation. Arroyo workbook links open H019 and H020.
 
 The site selector changes the focus. All sites retains Arroyo as the historical spotlight while the inventory tracker totals all selected-site records; those scopes are labeled separately. Comparison charts always show all six sites. A site card selects that site. Explicit browser view choices are remembered for the session; a new session starts with Arroyo.
 
@@ -43,7 +43,8 @@ These remain browser-local prototype controls, not production authorization or e
 
 - **Shared presentation views:** Supervisor, Technician and HSE Supervisor have identical pages, charts, source details, exports and ordinary inventory controls. Each can configure parts and thresholds, enable site rules, approve/cancel requests, and record issues/counts and receipts.
 - **Critical HSE verification:** the HSE Supervisor demo role and a recorded verification note are still required to clear critical safety actions. The role selectors retain actor attribution and this specific workflow check.
-- **Quick entry:** Add part includes **Fill demo values**. It fills a clearly simulated example for review; it does not submit the form or create a record until the presenter chooses submit.
+- **Quick entry:** Add part and Add HSE Action both include **Fill demo values**. They fill clearly simulated examples for review; neither saves until the presenter submits.
+- **HSE creation and deletion:** all three demo roles can add and delete their browser-local actions. Required fields are site, linked asset, hazard, potential severity, owner, deadline, likelihood and control gap. Corrective estimates and person-hours are optional, with blank values remaining unknown. New actions start Open, use unique DEMO-HSE IDs and appear in a separate list under the same site, severity and status filters. Workbook cards and exports continue to reflect only workbook records. A new severity-5 demo action joins its site’s safety hold until HSE Supervisor verification; deleting a demo never removes workbook actions. HSE Reset demo clears created actions and simulated progress, while IDs are not reused.
 
 Unknown values remain unavailable, distinct from zero. No demo inventory is created automatically. Demo roles are browser controls, not production authentication. Records are saved only in the same browser and origin. Hosted and offline copies do not share state.
 
@@ -61,7 +62,7 @@ When a site rule is enabled, stock changes and Check stock evaluate inventory po
 
 ## Deliverables
 
-`Lone-Mesa-Energy.html` in the delivery package is the complete offline website. The `source` folder contains editable code. `screenshots/add-part-filled-demo.png` shows the new prefilled Add part form; the other feature screenshots show smart notes and safety gates. Any inventory and workflow updates shown are explicitly simulated. Verification reports are included alongside the screenshots.
+`Lone-Mesa-Energy.html` in the delivery package is the complete offline website. The `source` folder contains editable code. `screenshots/add-hse-prefilled.png` shows the new prefilled HSE form; `screenshots/hse-created-action.png` shows its action list. Any inventory and workflow updates shown are explicitly simulated. Verification reports are included alongside the screenshots.
 
 ## Local development and verification
 

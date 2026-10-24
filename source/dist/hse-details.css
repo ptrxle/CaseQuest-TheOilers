@@ -72,3 +72,12 @@
  .hse-detail-history li > div { flex-wrap:wrap; gap:2px; }
 }
 @media(prefers-reduced-motion:reduce) { .hse-detail-hold { transition:none; } }
+
+/* HSE creation uses the same form components as Add part. */
+.hse-add-button { margin-left:auto; white-space:nowrap; }
+.hse-demo-list { margin-bottom:20px; }
+.hse-row-actions { display:flex; gap:6px; flex-wrap:wrap; }
+.hse-delete-link { color:#a72e57!important; }
+.hse-delete-confirm { background:#a72e57; }
+.hse-create .sp-cost-note { margin-top:12px; }
+@media(max-width:600px) { .hse-add-button { margin-left:0; } .hse-create .sp-demo-fill { flex-wrap:wrap; } }

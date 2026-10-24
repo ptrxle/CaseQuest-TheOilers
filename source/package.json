@@ -1,9 +1,9 @@
 {
   "name": "lone-mesa-energy",
-  "version": "7.2.0",
+  "version": "7.3.0",
   "private": true,
   "scripts": {
-    "test": "node tests/spare-parts-model-tests.cjs && node tests/browser-qa.cjs && node tests/spare-parts-browser.cjs && node tests/parts-features-browser.cjs && node tests/demo-form-browser.cjs",
+    "test": "node tests/spare-parts-model-tests.cjs && node tests/browser-qa.cjs && node tests/spare-parts-browser.cjs && node tests/parts-features-browser.cjs && node tests/demo-form-browser.cjs && node tests/hse-create-browser.cjs",
     "test:model": "node tests/spare-parts-model-tests.cjs"
   },
   "devDependencies": {

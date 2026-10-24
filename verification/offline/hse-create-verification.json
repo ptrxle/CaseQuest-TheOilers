@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "checks": [
+    "All three roles can prefill, explicitly create and delete; cancel is harmless, deleted IDs stay unique, source cards stay unchanged",
+    "Prefill respects site and asset; creations remain visible; site/severity filters and search support demo records",
+    "Required fields, real dates, site/asset pairing and nonnegative amounts are validated; omitted amounts remain null; workbook deletion rejected",
+    "Created critical actions participate in complete site gates and HSE-only review; verified progress persists; deletion never releases workbook holds",
+    "User text is escaped; mobile form fits; reset removes created records and progress, persists reset, and preserves all workbook evidence"
+  ],
+  "sourceUnchanged": true,
+  "errors": []
+}
