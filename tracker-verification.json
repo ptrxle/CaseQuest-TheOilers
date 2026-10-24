@@ -10,6 +10,7 @@
     "Three-page navigation, removed-route fallback, and all tracker tabs",
     "Arroyo Add/Try demo defaults, explicit other-site selection, and no default seeding",
     "Technician issue 3 creates request 7; tracker updates; configuration and approval guarded",
+    "HSE Supervisor verifies both critical Arroyo actions before request approval",
     "No duplicate requests; approval note required; partial/full receipts and over-receipt protection",
     "Reload persistence, HSE read-only, cross-site modal isolation, unknown count distinct from zero",
     "Arroyo H019/H020 two-action gate, supervisor notes, separate reset, workbook immutable",

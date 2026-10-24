@@ -26,7 +26,7 @@ const OUT = path.join(__dirname,'tracker-verification.json');
     assert.equal(await data(() => PartsStore.getItems().length), 0);
     assert.match(await page.locator('.sp-tracker-heading').innerText(), /Inventory tracker[\s\S]*Browser-local demo[\s\S]*separate from workbook history/);
     assert.match(await page.locator('.sp-tracker-empty').innerText(), /No demo inventory yet[\s\S]*stock quantities are not supplied/);
-    const summary = await page.locator('.sp-workspace').evaluate(el => ({ text: el.firstElementChild.textContent, tracker: el.firstElementChild.matches('.sp-tracker') }));
+    const summary = await page.locator('.af-summary').evaluate(el => ({ text: el.textContent, tracker: el.matches('.sp-tracker') }));
     assert.equal(summary.tracker, false);
     assert.match(summary.text, /Arroyo/);
     assert.match(summary.text, /2025|historical/i);
@@ -98,6 +98,21 @@ const OUT = path.join(__dirname,'tracker-verification.json');
     assert.match(await data(() => { try { PartsStore.approve(PartsStore.getOrders('S04')[0].id, 'Forbidden technician approval'); return 'FAILED'; } catch (e) { return e.message; } }), /role/);
     checked('Technician issue 3 creates request 7; tracker updates; configuration and approval guarded');
 
+    // The required critical HSE gate must clear before Supervisor request approval.
+    await page.click('[data-sp-action="hse-action"][data-sp-id="H019"]');
+    for (const id of ['H019', 'H020']) {
+      await page.selectOption('#hse-detail-action', id);
+      await page.selectOption('#hse-detail-role', 'Technician');
+      await page.fill('#hse-detail-notes', 'SIMULATED: corrective work completed for ' + id + '.');
+      await page.click('[data-hse-command="submit"]');
+      await page.selectOption('#hse-detail-role', 'HSE Supervisor');
+      await page.fill('#hse-detail-verification', 'SIMULATED: HSE supervisor verified ' + id + '.');
+      await page.click('[data-hse-command="verify"]');
+    }
+    assert.equal(await data(() => HSEActionDetails.gate('S04').held), false);
+    await close();
+    checked('HSE Supervisor verifies both critical Arroyo actions before request approval');
+
     await page.selectOption('#role', 'Supervisor');
     await page.click('[data-sp-action="check"]');
     await page.click('[data-sp-action="check"]');
@@ -166,12 +181,13 @@ const OUT = path.join(__dirname,'tracker-verification.json');
     assert.equal(await data(() => PartsStore.getItems('S04')[0].on_hand), 8);
     checked('Reload persistence, HSE read-only, cross-site modal isolation, unknown count distinct from zero');
 
-    // HSE workflow remains independent. Both critical Arroyo actions must be verified.
+    // HSE demo state remains separate from inventory. Reset it before exercising both actions again.
     const sparesBefore = await data(() => JSON.stringify(PartsStore.snapshot()));
     await page.selectOption('#site-scope', 'S04');
     await page.click('#nav a[href="#hse"]');
     await page.selectOption('#hse-severity', '5');
     await page.click('[data-kind="hse"][data-id="H019"]');
+    await page.click('[data-hse-command="reset"]');
     assert.match(await page.locator('.hse-detail-hold').innerText(), /2 actions/);
     assert.match(await page.locator('.hse-detail-hold').innerText(), /H019[\s\S]*H020/);
     await page.selectOption('#hse-detail-role', 'Technician');
@@ -191,7 +207,7 @@ const OUT = path.join(__dirname,'tracker-verification.json');
     await page.selectOption('#hse-detail-role', 'Technician');
     await page.fill('#hse-detail-notes', 'SIMULATED: Arroyo isolation review completed.');
     await page.click('[data-hse-command="submit"]');
-    await page.selectOption('#hse-detail-role', 'Supervisor');
+    await page.selectOption('#hse-detail-role', 'HSE Supervisor');
     await page.fill('#hse-detail-verification', 'SIMULATED: stored-energy controls verified.');
     await page.click('[data-hse-command="verify"]');
     assert.match(await page.locator('.hse-detail-hold').innerText(), /Critical HSE hold cleared/);

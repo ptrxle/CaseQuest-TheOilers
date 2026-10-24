@@ -15,9 +15,9 @@ function memoryStorage() {
   const data = new Map();
   return { data, getItem: k => data.get(k) ?? null, setItem: (k, v) => data.set(k, v), removeItem: k => data.delete(k) };
 }
-function fixture(storage = memoryStorage()) {
+function fixture(storage = memoryStorage(), options = {}) {
   let role = 'Supervisor', t = 0;
-  const store = Model.create({ sites, assets, storage, getRole: () => role, clock: () => new Date(Date.UTC(2026, 0, 1, 0, 0, t++)) });
+  const store = Model.create({ sites, assets, storage, getRole: () => role, clock: () => new Date(Date.UTC(2026, 0, 1, 0, 0, t++)), ...options });
   return { store, storage, setRole: r => { role = r; } };
 }
 const json = value => JSON.parse(JSON.stringify(value));
@@ -154,6 +154,108 @@ test('reset removes only this module and leaves source and separate demo state i
   assert.equal(store.getItems().length, 0); assert.equal(store.getOrders().length, 0); assert.equal(store.getActivity().length, 0);
   assert.equal(store.snapshot().siteRules.S02.enabled, false); assert.equal(storage.getItem(Model.storageKey), null);
   assert.equal(storage.getItem('lme-hse-action-demo-v1'), 'untouched'); assert.equal(JSON.stringify({ sites, assets }), sourceBefore);
+});
+
+test('critical safety gate keeps draft requests locked until every site action is verified', () => {
+  let unresolved = 2;
+  const { store } = fixture(undefined, { getSafetyGate: siteId => ({ held: siteId === 'S01' && unresolved > 0, critical: siteId === 'S01' ? 2 : 0, unresolved: siteId === 'S01' ? unresolved : 0 }) });
+  for (const siteId of ['S01', 'S02']) {
+    store.seedDemo(siteId);
+    store.issue(store.getItems(siteId)[0].id, 3, 'Simulated repair');
+  }
+  const heldOrder = store.getOrders('S01')[0], clearOrder = store.getOrders('S02')[0];
+  assert.equal(heldOrder.status, 'Pending approval'); assert.equal(heldOrder.safety_hold, true); assert.equal(heldOrder.unresolved_critical, 2);
+  const original = JSON.stringify(store.snapshot());
+  throws(() => store.approve(heldOrder.id, 'Reviewed'), 'Critical HSE hold');
+  assert.equal(JSON.stringify(store.snapshot()), original);
+  store.approve(clearOrder.id, 'Reviewed for other site'); assert.equal(store.getOrders('S02')[0].status, 'Approved');
+  assert.equal(store.check('all').created, 0); assert.equal(store.getOrders('all').find(o => o.id === heldOrder.id).safety_hold, true);
+  unresolved = 1;
+  assert.equal(store.getSafetyGate('S01').unresolved, 1);
+  throws(() => store.approve(heldOrder.id, 'First closure only'), 'Critical HSE hold');
+  unresolved = 0;
+  assert.equal(store.getOrders('S01')[0].safety_hold, false); store.approve(heldOrder.id, 'All critical actions verified');
+  assert.equal(store.getOrders('S01')[0].status, 'Approved');
+  assert.equal(store.snapshot().orders[0].safety_hold, undefined, 'Derived hold is not persisted as workflow status');
+});
+
+test('receipt gate is live after approval, partial receipt, reset or reload; blocked attempts never mutate stock', () => {
+  let held = false;
+  const provider = () => ({ held, critical: [{ hse_id: 'H1' }, { hse_id: 'H2' }], unresolved: held ? [{ hse_id: 'H1' }, { hse_id: 'H2' }] : [], clear: !held, validSite: true });
+  const { store, storage } = fixture(undefined, { getSafetyGate: provider });
+  store.seedDemo('S01'); const part = store.getItems()[0]; store.issue(part.id, 3, 'Simulated repair');
+  const request = store.getOrders()[0]; store.approve(request.id, 'Reviewed');
+  store.receive(request.id, 2, 'RECEIPT-1');
+  held = true;
+  const original = JSON.stringify(store.snapshot());
+  throws(() => store.receive(request.id, 1, 'RECEIPT-2'), 'Critical HSE hold');
+  throws(() => store.receive(request.id, 2, 'RECEIPT-1'), 'Critical HSE hold');
+  assert.equal(JSON.stringify(store.snapshot()), original); assert.equal(store.getOrders()[0].status, 'Partially received');
+  const reload = fixture(storage, { getSafetyGate: provider }).store;
+  assert.equal(reload.getOrders()[0].safety_hold, true); throws(() => reload.receive(request.id, 1, 'RECEIPT-2'), 'Critical HSE hold');
+  held = false;
+  const before = store.getActivity().length;
+  store.receive(request.id, 2, 'receipt-1'); assert.equal(store.getActivity().length, before, 'Cleared repeated receipt remains idempotent');
+  store.receive(request.id, 5, 'RECEIPT-2'); assert.equal(store.getItems()[0].on_hand, 8);
+  held = true; store.reset(); assert.equal(store.getSafetyGate('S01').held, true, 'Inventory reset cannot clear external HSE state');
+});
+
+test('HSE hold permits stock counts, issues, draft preparation and cancellation without unlock', () => {
+  const { store } = fixture(undefined, { getSafetyGate: () => ({ held: true, critical: 2, unresolved: 2 }) });
+  store.seedDemo('S01'); const part = store.getItems()[0]; store.adjust(part.id, 0, 'Verified demo count');
+  const order = store.getOrders()[0]; assert.equal(order.safety_hold, true); store.cancel(order.id, 'Superseded request');
+  store.adjust(part.id, 4, 'Count corrected'); store.issue(part.id, 3, 'Already approved maintenance task');
+  assert.equal(store.getItems()[0].on_hand, 1); assert.equal(store.getOrders().length, 2);
+  assert.equal(store.getOrders()[1].safety_hold, true); assert.equal(store.getSafetyGate('S01').unresolved, 2);
+});
+
+test('missing, contradictory, failed and untrusted gate providers fail closed', () => {
+  const invalidProviders = [undefined, null, () => undefined, () => { throw Error('Unavailable'); },
+    () => ({ held: false }), () => ({ held: false, critical: 2, unresolved: 1 }),
+    () => ({ held: false, critical: 0, unresolved: 0, validSite: false }),
+    () => ({ held: false, critical: 0, unresolved: 0, trusted: false }),
+    () => ({ held: false, critical: 0, unresolved: 0, available: false }),
+    () => ({ held: false, critical: 0, unresolved: 0, clear: false }),
+    () => ({ held: true, critical: 1, unresolved: 2 }), () => ({ held: false, critical: -1, unresolved: 0 })];
+  for (const getSafetyGate of invalidProviders) {
+    const { store } = fixture(undefined, { getSafetyGate });
+    store.seedDemo('S01'); store.issue(store.getItems()[0].id, 3, 'Demo');
+    assert.equal(store.getSafetyGate('S01').held, true); assert.equal(store.getSafetyGate('S01').available, false);
+    assert.equal(store.getOrders()[0].unresolved_critical, null);
+    throws(() => store.approve(store.getOrders()[0].id, 'Reviewed'), 'Safety status is unavailable');
+  }
+  const { store } = fixture(); assert.equal(store.getSafetyGate('S01').held, false);
+  throws(() => store.getSafetyGate('unknown'), 'valid site');
+});
+
+test('note sorting maps all supplied examples; punctuation and case do not change the result', () => {
+  const expectations = [
+    ['Noise and vibration increased', 'Bearing kit'], ['Visible leak reported', 'Seal kit'],
+    ['Protective trip; electrical panel', 'Electrical kit'], ['Feed conditions changed', 'No part, restart check'],
+    ['Cause not confirmed', 'Inspect first']
+  ];
+  assert.equal(Model.noteRules.length, 5);
+  for (const [note, kit] of expectations) {
+    const result = Model.suggestKit(note);
+    assert.equal(result.kit, kit); assert.equal(result.match, 'exact'); assert.equal(result.matched, true); assert.equal(result.unmatched, false);
+    assert.equal(Model.suggestKit('  ' + note.toUpperCase().replace(/ /g, '   ') + '!!! ').kit, kit);
+  }
+  assert.equal(Model.suggestKit('There is increased noise and vibration on the pump').kit, 'Bearing kit');
+  assert.equal(Model.suggestKit('A seal leak was reported').kit, 'Seal kit');
+  assert.equal(Model.suggestKit('Electrical panel tripped').kit, 'Electrical kit');
+  assert.equal(Model.suggestKit('Feed condition changed today').kit, 'No part, restart check');
+  assert.equal(Model.suggestKit('Unknown cause, inspect').kit, 'Inspect first');
+});
+
+test('ambiguous and unmatched notes require inspection; lookup cannot create inventory or orders', () => {
+  const { store } = fixture(), original = JSON.stringify(store.snapshot());
+  for (const note of ['', null, undefined, '  ...  ']) assert.equal(Model.suggestKit(note).kit, null);
+  const unknown = Model.suggestKit('Motor is warm'); assert.equal(unknown.kit, 'Inspect first'); assert.equal(unknown.unmatched, true); assert.equal(unknown.matched, false);
+  const conflict = Model.suggestKit('Noise and vibration increased; visible leak reported');
+  assert.equal(conflict.kit, 'Inspect first'); assert.equal(conflict.match, 'ambiguous'); assert.equal(conflict.matched, false);
+  assert.equal(Model.suggestKit('Cause not confirmed, noise and vibration increased').match, 'ambiguous');
+  assert.equal(Model.suggestKit('No noise and vibration noted').match, 'unmatched');
+  assert.equal(JSON.stringify(store.snapshot()), original);
 });
 
 console.log('\n' + count + ' spare-parts model tests passed.');

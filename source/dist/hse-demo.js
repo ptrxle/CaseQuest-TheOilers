@@ -4,31 +4,54 @@ window.HSEActionDetails = (() => {
   const KEY = 'lme-hse-action-demo-v1';
   const statuses = ['Open', 'In progress', 'Awaiting verification', 'Verified closed'];
   let selectedId = null, demoRole = 'Technician', message = '', drafts = {}, saved = {}, persistent = true;
-  try {
-    const stored = JSON.parse(localStorage.getItem(KEY) || '{}');
-    if (stored.version === 1 && stored.actions && typeof stored.actions === 'object') {
-      for (const [id, item] of Object.entries(stored.actions)) {
-        if (!DATA.hse.some(r => r.hse_id === id) || !item || !statuses.includes(item.status)) continue;
-        const history = Array.isArray(item.history) ? item.history.filter(x => x && typeof x.actor === 'string' && typeof x.time === 'string' && typeof x.note === 'string' && typeof x.action === 'string').slice(-100) : [];
-        if (item.status === 'Verified closed' && !history.some(x => x.action === 'Verified closure' && ['Supervisor','HSE Supervisor'].includes(x.actor) && x.note.trim())) continue;
-        saved[id] = {status:item.status, note:String(item.note || '').slice(0,2000), evidence:String(item.evidence || '').slice(0,300), history};
-      }
-    }
-  } catch (_) { persistent = false; }
+  const clone = value => JSON.parse(JSON.stringify(value));
+  function record(id) { return DATA.hse.find(r => r.hse_id === id); }
+  function isSourceClosed(r) { return String(r.action_status).trim().toLowerCase() === 'closed'; }
+  function isCritical(r) { return Number(r.potential_severity) === 5; }
+  function reviewRole(r, role) { return isCritical(r) ? role === 'HSE Supervisor' : ['Supervisor','HSE Supervisor'].includes(role); }
+  function validClosure(r, item) {
+    const last = item.history.at(-1);
+    return item.status === 'Verified closed' && last?.action === 'Verified closure' && reviewRole(r, last.actor) && !!last.note.trim() && Number.isFinite(Date.parse(last.time));
+  }
   function persist() {
     try { localStorage.setItem(KEY, JSON.stringify({version:1, actions:saved})); }
     catch (_) { persistent = false; }
   }
-  function record(id) { return DATA.hse.find(r => r.hse_id === id); }
-  function isSourceClosed(r) { return String(r.action_status).toLowerCase() === 'closed'; }
+  function load() {
+    let migrated = false;
+    try {
+      const stored = JSON.parse(localStorage.getItem(KEY) || '{}'), next = {};
+      if (stored.version === 1 && stored.actions && typeof stored.actions === 'object' && !Array.isArray(stored.actions)) {
+        for (const [id, item] of Object.entries(stored.actions)) {
+          const r = record(id);
+          if (!r || isSourceClosed(r) || !item || !statuses.includes(item.status)) continue;
+          const history = Array.isArray(item.history) ? item.history.filter(x => x && typeof x.actor === 'string' && typeof x.time === 'string' && typeof x.note === 'string' && typeof x.action === 'string').slice(-100).map(x=>({actor:x.actor.slice(0,100),time:x.time.slice(0,100),action:x.action.slice(0,100),note:x.note.slice(0,2000),evidence:String(x.evidence || '').slice(0,300)})) : [];
+          const clean = {status:item.status, note:String(item.note || '').slice(0,2000), evidence:String(item.evidence || '').slice(0,300), history};
+          if (clean.status === 'Verified closed' && !validClosure(r, clean)) {
+            clean.status = 'Awaiting verification';
+            clean.history = [...history,{actor:'System',time:new Date().toISOString(),action:'Verification required',note:isCritical(r)?'Critical closure requires a recorded HSE Supervisor verification. Previous demo notes and history are preserved.':'A valid supervisor verification note is required. Previous demo notes and history are preserved.',evidence:''}].slice(-100);
+            migrated = true;
+          }
+          next[id] = clean;
+        }
+      }
+      saved = next;
+      if (migrated) persist();
+    } catch (_) { saved = {}; persistent = false; }
+  }
+  function notify(siteId, action) { window.dispatchEvent(new CustomEvent('hse-demo-change',{detail:{siteId:siteId || null,action}})); }
   function progress(r) { return isSourceClosed(r) ? {status:'Source closed', history:[]} : saved[r.hse_id] || {status:'Open', note:'', evidence:'', history:[]}; }
   function gate(siteId) {
-    const critical = DATA.hse.filter(r => r.site_id === siteId && Number(r.potential_severity) === 5 && !isSourceClosed(r));
-    const unresolved = critical.filter(r => progress(r).status !== 'Verified closed');
-    return {critical, unresolved};
+    const validSite = DATA.sites.some(s => s.site_id === siteId);
+    if (!validSite) return {validSite:false,critical:[],unresolved:[],held:true,clear:false};
+    // Inspect every critical source action at the site, regardless of UI filters.
+    const critical = DATA.hse.filter(r => r.site_id === siteId && isCritical(r) && !isSourceClosed(r));
+    const unresolved = critical.filter(r => !validClosure(r, progress(r)));
+    return {validSite:true,critical:clone(critical),unresolved:clone(unresolved),held:unresolved.length > 0,clear:unresolved.length === 0};
   }
+  load();
   function holdMarkup(r) {
-    const g = gate(r.site_id), held = g.unresolved.length > 0;
+    const g = gate(r.site_id), held = g.held;
     const title = held ? `${siteName(r.site_id)} · Critical HSE hold` : g.critical.length ? 'Critical HSE hold cleared.' : `${siteName(r.site_id)} · No unresolved critical actions`;
     const sub = held ? `${g.unresolved.length} ${g.unresolved.length === 1 ? 'action still needs' : 'actions still need'} verified closure.` : 'Other implementation requirements and approvals still apply.';
     return `<div class="hse-detail-hold ${held?'is-held':'is-clear'}" role="status"><span class="hse-detail-hold-icon">${icon(held?'alert':'check')}</span><div><strong>${esc(title)}</strong><span>${esc(sub)}</span>${g.critical.length?`<div class="hse-detail-critical">${g.critical.map(x=>`<button type="button" data-hse-select="${esc(x.hse_id)}" aria-label="Open ${esc(x.hse_id)}">${esc(x.hse_id)} <span>${progress(x).status==='Verified closed'?'✓ Verified':'· '+esc(progress(x).status)}</span></button>`).join('')}</div>`:''}</div></div>`;
@@ -42,11 +65,11 @@ window.HSEActionDetails = (() => {
   function render() {
     const r = record(selectedId); if(!r || !allowed('hse') || !withinScope(r)) return false;
     const p = progress(r), sourceClosed = isSourceClosed(r), pending = p.status === 'Awaiting verification', verified = p.status === 'Verified closed';
-    const supervisor = demoRole !== 'Technician', d = drafts[r.hse_id] || {note:p.note || '', evidence:p.evidence || '', verification:''};
+    const supervisor = reviewRole(r, demoRole), reviewerLabel = isCritical(r) ? 'HSE Supervisor' : 'Supervisor', d = drafts[r.hse_id] || {note:p.note || '', evidence:p.evidence || '', verification:''};
     const records = DATA.hse.filter(x => state.site === 'all' || x.site_id === state.site);
     const history = [...p.history].reverse();
     const steps = statuses.map((s,i)=>`<li class="${!sourceClosed&&i<=statuses.indexOf(p.status)?'is-reached':''} ${s===p.status?'is-current':''}" ${s===p.status?'aria-current="step"':''}><span>${!sourceClosed&&i<statuses.indexOf(p.status)?'✓':i+1}</span>${esc(s)}</li>`).join('');
-    openModal('HSE action details', `<div class="hse-detail"><div class="hse-detail-eyebrow">Field operations <span>·</span> Simulated demo</div><label class="hse-detail-select-label" for="hse-detail-action">Action</label><select id="hse-detail-action">${records.map(x=>`<option value="${esc(x.hse_id)}" ${x.hse_id===selectedId?'selected':''}>${esc(x.hse_id+' · '+x.hazard+(state.site==='all'?' · '+siteName(x.site_id):''))}</option>`).join('')}</select>${holdMarkup(r)}${sourceMarkup(r)}<section class="hse-detail-workflow"><div class="hse-detail-section-head"><h3>Demo workflow</h3>${badge(p.status,verified?'success':pending?'warning':'neutral')}</div>${sourceClosed?'<div class="hse-detail-readonly">This action is closed in the workbook. Its source record stays read-only.</div>':`<ol class="hse-detail-steps" aria-label="Demo workflow progress">${steps}</ol><label class="hse-detail-label" for="hse-detail-notes">Completion notes <span>Simulated</span></label><textarea id="hse-detail-notes" maxlength="2000" placeholder="Describe the simulated work completed…" ${pending||verified?'readonly':''}>${esc(d.note)}</textarea><div class="hse-detail-inputs"><div><label class="hse-detail-label" for="hse-detail-evidence">Evidence reference <span>Optional</span></label><input id="hse-detail-evidence" maxlength="300" value="${esc(d.evidence)}" placeholder="e.g. DEMO inspection record" ${pending||verified?'readonly':''}></div><div><label class="hse-detail-label" for="hse-detail-role">Demo role</label><select id="hse-detail-role">${ROLES.map(role=>`<option ${demoRole===role?'selected':''}>${esc(role)}</option>`).join('')}</select></div></div>${pending?`<div class="hse-detail-review"><label class="hse-detail-label" for="hse-detail-verification">Verification note <span>Supervisor required</span></label><textarea id="hse-detail-verification" maxlength="2000" ${supervisor?'':'disabled'} placeholder="${supervisor?'Record the simulated review and verification…':'Switch to a supervisor demo role to verify.'}">${esc(d.verification)}</textarea></div>`:''}<div class="hse-detail-buttons">${p.status==='Open'?'<button type="button" class="hse-detail-secondary" data-hse-command="start">Start work</button>':''}<button type="button" class="hse-detail-primary" data-hse-command="submit" ${pending||verified?'disabled':''}>Submit for review</button><button type="button" class="hse-detail-primary" data-hse-command="verify" ${pending&&supervisor?'':'disabled'}>Verify closure</button>${pending&&supervisor?'<button type="button" class="hse-detail-secondary" data-hse-command="return">Return for rework</button>':''}<button type="button" class="hse-detail-reset" data-hse-command="reset">Reset demo</button></div>`}<div id="hse-detail-message" class="hse-detail-message" role="status" aria-live="polite">${esc(message)}</div><details class="hse-detail-history"><summary>Demo activity <span>${history.length}</span></summary>${history.length?`<ol>${history.map(x=>`<li><div><strong>${esc(x.action)}</strong><time datetime="${esc(x.time)}">${esc(new Date(x.time).toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}))}</time></div><span>Demo ${esc(x.actor)}</span><p>${esc(x.note)}</p>${x.evidence?`<small>Reference: ${esc(x.evidence)}</small>`:''}</li>`).join('')}</ol>`:'<div class="hse-detail-empty">No simulated updates yet.</div>'}</details></section><div class="hse-detail-footer">Original records stay unchanged. Updates are simulated${persistent?' and saved in this browser':' for this session only'}.<br>Demo roles are not authentication. This hold is not an equipment control.</div></div>`);
+    openModal('HSE action details', `<div class="hse-detail"><div class="hse-detail-eyebrow">Field operations <span>·</span> Simulated demo</div><label class="hse-detail-select-label" for="hse-detail-action">Action</label><select id="hse-detail-action">${records.map(x=>`<option value="${esc(x.hse_id)}" ${x.hse_id===selectedId?'selected':''}>${esc(x.hse_id+' · '+x.hazard+(state.site==='all'?' · '+siteName(x.site_id):''))}</option>`).join('')}</select>${holdMarkup(r)}${sourceMarkup(r)}<section class="hse-detail-workflow"><div class="hse-detail-section-head"><h3>Demo workflow</h3>${badge(p.status,verified?'success':pending?'warning':'neutral')}</div>${sourceClosed?'<div class="hse-detail-readonly">This action is closed in the workbook. Its source record stays read-only.</div>':`<ol class="hse-detail-steps" aria-label="Demo workflow progress">${steps}</ol><label class="hse-detail-label" for="hse-detail-notes">Completion notes <span>Simulated</span></label><textarea id="hse-detail-notes" maxlength="2000" placeholder="Describe the simulated work completed…" ${pending||verified?'readonly':''}>${esc(d.note)}</textarea><div class="hse-detail-inputs"><div><label class="hse-detail-label" for="hse-detail-evidence">Evidence reference <span>Optional</span></label><input id="hse-detail-evidence" maxlength="300" value="${esc(d.evidence)}" placeholder="e.g. DEMO inspection record" ${pending||verified?'readonly':''}></div><div><label class="hse-detail-label" for="hse-detail-role">Demo role</label><select id="hse-detail-role">${ROLES.map(role=>`<option ${demoRole===role?'selected':''}>${esc(role)}</option>`).join('')}</select></div></div>${pending?`<div class="hse-detail-review"><label class="hse-detail-label" for="hse-detail-verification">Verification note <span>${reviewerLabel} required</span></label><textarea id="hse-detail-verification" maxlength="2000" ${supervisor?'':'disabled'} placeholder="${supervisor?'Record the simulated review and verification…':'Switch to the '+reviewerLabel+' demo role to verify.'}">${esc(d.verification)}</textarea></div>`:''}<div class="hse-detail-buttons">${p.status==='Open'?'<button type="button" class="hse-detail-secondary" data-hse-command="start">Start work</button>':''}<button type="button" class="hse-detail-primary" data-hse-command="submit" ${pending||verified?'disabled':''}>Submit for review</button><button type="button" class="hse-detail-primary" data-hse-command="verify" ${pending&&supervisor?'':'disabled'}>Verify closure</button>${pending&&supervisor?'<button type="button" class="hse-detail-secondary" data-hse-command="return">Return for rework</button>':''}<button type="button" class="hse-detail-reset" data-hse-command="reset">Reset demo</button></div>`}<div id="hse-detail-message" class="hse-detail-message" role="status" aria-live="polite">${esc(message)}</div><details class="hse-detail-history"><summary>Demo activity <span>${history.length}</span></summary>${history.length?`<ol>${history.map(x=>`<li><div><strong>${esc(x.action)}</strong><time datetime="${esc(x.time)}">${esc(new Date(x.time).toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}))}</time></div><span>Demo ${esc(x.actor)}</span><p>${esc(x.note)}</p>${x.evidence?`<small>Reference: ${esc(x.evidence)}</small>`:''}</li>`).join('')}</ol>`:'<div class="hse-detail-empty">No simulated updates yet.</div>'}</details></section><div class="hse-detail-footer">Original records stay unchanged. Updates are simulated${persistent?' and saved in this browser':' for this session only'}.<br>Demo roles are not authentication. This hold is not an equipment control.</div></div>`);
     return true;
   }
   function capture() {
@@ -59,7 +82,7 @@ window.HSEActionDetails = (() => {
     const r = record(selectedId); if(!r || !allowed('hse') || !withinScope(r)) return;
     capture(); const p = progress(r), d = drafts[selectedId] || {};
     if(action === 'reset') {
-      saved = {}; drafts = {}; message = 'Demo reset. All simulated notes, statuses and activity are cleared.'; persist(); render(); return;
+      saved = {}; drafts = {}; message = 'Demo reset. All simulated notes, statuses and activity are cleared.'; persist(); notify(null,'reset'); render(); return;
     }
     if(isSourceClosed(r)) return;
     let status, label, note;
@@ -69,14 +92,14 @@ window.HSEActionDetails = (() => {
       status='Awaiting verification';label='Submitted for review';note=d.note.trim();
     }
     if((action === 'verify' || action === 'return') && p.status === 'Awaiting verification') {
-      if(demoRole === 'Technician')return announce('Only a supervisor demo role can review this action.');
-      if(!d.verification?.trim())return announce('A supervisor verification note is required.','hse-detail-verification');
+      if(!reviewRole(r,demoRole))return announce(isCritical(r)?'Only the HSE Supervisor demo role can verify or return critical safety actions.':'Only a supervisor demo role can review this action.');
+      if(!d.verification?.trim())return announce(isCritical(r)?'An HSE Supervisor verification note is required.':'A supervisor verification note is required.','hse-detail-verification');
       status=action==='verify'?'Verified closed':'In progress';label=action==='verify'?'Verified closure':'Returned for rework';note=d.verification.trim();
     }
     if(!status)return;
     saved[r.hse_id]={status,note:d.note || '',evidence:d.evidence || '',history:[...p.history,{actor:demoRole,time:new Date().toISOString(),action:label,note,evidence:action==='submit'?(d.evidence || ''):''}].slice(-100)};
-    drafts[r.hse_id].verification='';persist();
-    message=status==='Awaiting verification'?(gate(r.site_id).unresolved.length?'Submitted for review. The critical hold remains until all critical actions are verified.':'Submitted for review. Supervisor verification is still required.'):status==='Verified closed'?'Supervisor verification recorded.':status==='In progress'&&action==='return'?'Returned for rework. The action remains unresolved.':'Demo work is in progress.';
+    drafts[r.hse_id].verification='';persist();notify(r.site_id,action);
+    message=status==='Awaiting verification'?(gate(r.site_id).unresolved.length?'Submitted for review. The critical hold remains until all critical actions are verified.':'Submitted for review. Supervisor verification is still required.'):status==='Verified closed'?(gate(r.site_id).held?'Verification recorded. Other critical actions still keep this site on HOLD.':'Critical HSE hold cleared. Other implementation requirements and approvals still apply.'):status==='In progress'&&action==='return'?'Returned for rework. The action remains unresolved.':'Demo work is in progress.';
     render();
   }
   document.addEventListener('input', e => {if(e.target.closest('.hse-detail')){capture();announce('');}});
@@ -89,5 +112,19 @@ window.HSEActionDetails = (() => {
     if(b.dataset.hseSelect){capture();selectedId=b.dataset.hseSelect;message='';render();}
     else command(b.dataset.hseCommand);
   });
-  return Object.freeze({open(id) {if(!allowed('hse')||!withinScope(record(id)))return false;selectedId=id;message='';return render();}});
+  window.addEventListener('storage', e => {
+    if (e.key !== KEY && e.key !== null) return;
+    if (e.storageArea && e.storageArea !== localStorage) return;
+    load(); drafts = {}; message = 'Demo progress refreshed from another browser tab.';
+    notify(null,'storage');
+    if(document.querySelector('.hse-detail')) render();
+  });
+  // The microtask runs after the public API is assigned, allowing dependent UI to refresh.
+  queueMicrotask(() => notify(null,'initialized'));
+  return Object.freeze({
+    open(id) {if(!allowed('hse')||!withinScope(record(id)))return false;selectedId=id;demoRole=ROLES.includes(state.role)?state.role:'Technician';message='';return render();},
+    gate,
+    progress(id) {const r=record(id);return r?clone(progress(r)):null;},
+    status(id) {const r=record(id);return r?progress(r).status:null;}
+  });
 })();

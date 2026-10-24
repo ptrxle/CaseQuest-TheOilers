@@ -32,12 +32,42 @@
     return value;
   };
   const date = value => typeof value === 'string' && Number.isFinite(Date.parse(value));
+  const noteRules = Object.freeze([
+    { id: 'bearing', note: 'Noise and vibration increased', kit: 'Bearing kit' },
+    { id: 'seal', note: 'Visible leak reported', kit: 'Seal kit' },
+    { id: 'electrical', note: 'Protective trip; electrical panel', kit: 'Electrical kit' },
+    { id: 'restart', note: 'Feed conditions changed', kit: 'No part, restart check' },
+    { id: 'inspect', note: 'Cause not confirmed', kit: 'Inspect first' }
+  ].map(rule => Object.freeze(rule)));
+  const normalizeNote = value => value.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  function suggestKit(value) {
+    const note = text(value, 'Technician note'), normalized = normalizeNote(note);
+    const result = (kit, match, rule = null) => ({ note, kit, match, matched: match === 'exact' || match === 'keyword', unmatched: match === 'unmatched', rule_id: rule ? rule.id : null });
+    if (!normalized) return result(null, 'empty');
+    const exact = noteRules.find(rule => normalizeNote(rule.note) === normalized);
+    if (exact) return result(exact.kit, 'exact', exact);
+    // Conservative phrase matching is advisory; conflicting observations require inspection.
+    const patterns = [
+      /\bnoise\b/.test(normalized) && /\bvibration\b/.test(normalized),
+      /\bleak(?:ing)?\b/.test(normalized) && /\b(visible|reported|seal)\b/.test(normalized),
+      /\belectrical panel\b/.test(normalized) && /\b(trip|tripped)\b/.test(normalized),
+      /\bfeed conditions?\b/.test(normalized) && /\b(change|changed)\b/.test(normalized),
+      /\bcause\b/.test(normalized) && /\b(not confirmed|unconfirmed|unknown)\b/.test(normalized)
+    ];
+    const matches = noteRules.filter((rule, index) => patterns[index]);
+    if (matches.length > 1) return result('Inspect first', 'ambiguous');
+    // Do not treat a negated observation as a confirmed symptom.
+    const negated = /\b(no|without)\s+(?:\w+\s+){0,2}(noise|vibration|leak|leaking|trip)\b/.test(normalized);
+    if (matches.length === 1 && !negated) return result(matches[0].kit, 'keyword', matches[0]);
+    return result('Inspect first', 'unmatched');
+  }
 
   function create(options) {
     options = options || {};
     const sites = new Map((options.sites || []).map(s => [s.site_id, { site_id: s.site_id }]));
     const assets = new Map((options.assets || []).map(a => [a.asset_id, { asset_id: a.asset_id, site_id: a.site_id }]));
     const getRole = typeof options.getRole === 'function' ? options.getRole : () => '';
+    const hasGateProvider = own(options, 'getSafetyGate');
     let storage = null;
     let status = { available: false, mode: 'memory', error: '', invalidData: false };
     try {
@@ -51,6 +81,26 @@
     let state = fresh();
     function site(id) { if (!sites.has(id)) fail('Choose a valid site.'); return id; }
     function scope(id) { if (id !== 'all') site(id); return id; }
+    function safetyGate(siteId) {
+      site(siteId);
+      const unavailable = { site_id: siteId, held: true, critical: null, unresolved: null, available: false };
+      // Isolated models can omit the provider. The website supplies the HSE gate.
+      if (!hasGateProvider) return { site_id: siteId, held: false, critical: 0, unresolved: 0, available: true };
+      try {
+        if (typeof options.getSafetyGate !== 'function') return unavailable;
+        const gate = options.getSafetyGate(siteId);
+        if (!plain(gate) || typeof gate.held !== 'boolean' || gate.validSite === false || gate.available === false || gate.trusted === false || gate.valid === false) return unavailable;
+        const critical = Array.isArray(gate.critical) ? gate.critical.length : gate.critical;
+        const unresolved = Array.isArray(gate.unresolved) ? gate.unresolved.length : gate.unresolved;
+        if (!Number.isSafeInteger(critical) || critical < 0 || !Number.isSafeInteger(unresolved) || unresolved < 0 || unresolved > critical || gate.held !== (unresolved > 0)) return unavailable;
+        if (own(gate, 'clear') && (typeof gate.clear !== 'boolean' || gate.clear === gate.held)) return unavailable;
+        return { site_id: siteId, held: gate.held, critical, unresolved, available: true };
+      } catch (_) { return unavailable; }
+    }
+    function requireSafetyClear(siteId) {
+      const gate = safetyGate(siteId);
+      if (gate.held) fail(gate.available ? 'Critical HSE hold: requests remain locked until the HSE supervisor verifies every critical action.' : 'Safety status is unavailable. Requests remain locked until the critical HSE gate can be checked.');
+    }
     function role(permissions) {
       const current = getRole();
       if (!ROLES.includes(current) || !permissions.includes(current)) fail('This action is not available for your role.');
@@ -103,7 +153,10 @@
       return Object.assign({}, i, { on_order: onOrder, pending_qty: pending, approved_qty: approved, position,
         stock_state: !configured ? 'Unconfigured' : onOrder > 0 ? 'On order' : position <= i.reorder_point ? 'Reorder needed' : 'In stock' });
     }
-    function enrichOrder(o) { return Object.assign({}, o, { remaining_quantity: o.quantity - o.received_quantity }); }
+    function enrichOrder(o) {
+      const gate = safetyGate(o.site_id);
+      return Object.assign({}, o, { remaining_quantity: o.quantity - o.received_quantity, safety_hold: gate.held, unresolved_critical: gate.unresolved, safety_available: gate.available });
+    }
     function log(action, fields, actorRole, at) {
       state.activity.push(Object.assign({ id: next('SPA-'), site_id: null, action, actor: 'Demo ' + actorRole, role: actorRole, at, notes: '' }, fields));
     }
@@ -202,6 +255,7 @@
       getItems(siteId = 'all') { scope(siteId); return clone(state.items.filter(i => siteId === 'all' || i.site_id === siteId).map(enrich)); },
       getOrders(siteId = 'all') { scope(siteId); return clone(state.orders.filter(o => siteId === 'all' || o.site_id === siteId).map(enrichOrder)); },
       getActivity(siteId = 'all') { scope(siteId); return clone(state.activity.filter(a => siteId === 'all' || a.site_id === siteId)); },
+      getSafetyGate(siteId) { return clone(safetyGate(siteId)); },
       storageStatus: () => clone(status),
       addItem(input) {
         const r = supervisor(), at = now();
@@ -245,6 +299,7 @@
       approve(id, note) {
         const r = supervisor(), o = order(id), notes = text(note, 'Approval note', true);
         if (o.status !== 'Pending approval') fail('Only pending requests can be approved.');
+        requireSafetyClear(o.site_id);
         const at = now(); o.status = 'Approved'; log('Request approved', { site_id: o.site_id, item_id: o.item_id, order_id: id, notes }, r, at);
         persist(); return clone(enrichOrder(o));
       },
@@ -256,6 +311,7 @@
       },
       receive(id, quantity, reference) {
         const r = movement(), o = order(id), q = positive(quantity, 'Receipt quantity'), ref = text(reference, 'Receipt reference', true);
+        requireSafetyClear(o.site_id);
         const repeated = o.receipts.find(receipt => receipt.reference.toLocaleLowerCase() === ref.toLocaleLowerCase());
         if (repeated) { if (repeated.quantity !== q) fail('This receipt reference already has a different quantity.'); return clone(enrichOrder(o)); }
         if (o.status !== 'Approved' && o.status !== 'Partially received') fail('Only approved requests can receive stock.');
@@ -292,5 +348,5 @@
     };
     return Object.freeze(api);
   }
-  root.SparePartsModel = Object.freeze({ create, storageKey: KEY });
+  root.SparePartsModel = Object.freeze({ create, storageKey: KEY, suggestKit, noteRules });
 })(typeof window !== 'undefined' ? window : globalThis);
