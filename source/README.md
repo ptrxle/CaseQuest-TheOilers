@@ -1,10 +1,10 @@
-# Lone Mesa Energy · Arroyo-first Spare Parts
+# Lone Mesa Energy · Arroyo-first Overview
 
-**Spare Parts is the landing page. Arroyo is selected on a fresh visit.** The navigation contains only Spare Parts, Dashboard and HSE Actions. This update builds on the attached Lone-Mesa-Spare-Parts-Update version.
+**Overview is the landing page. Arroyo is selected on a fresh visit.** The navigation contains only Overview, Dashboard and HSE Actions. This update builds on the attached Lone-Mesa-Spare-Parts-Update version.
 
 ## Pages
 
-- **Spare Parts:** an Arroyo-first historical dashboard above the working inventory tracker. Source evidence shows monthly parts waits, asset priorities and compact comparisons with the other five sites. The tracker includes stock status, request progress, inventory, orders and site automation.
+- **Overview:** an Arroyo-first historical dashboard above the working inventory tracker. Source evidence shows monthly parts waits, asset priorities and compact comparisons with the other five sites. The tracker includes stock status, request progress, inventory, orders and site automation.
 - **Dashboard:** a larger Arroyo spotlight explains the priority, compares all six sites, shows monthly waits and equipment groups, and displays potential HSE severity. The O4 card is explicitly a case scenario. Existing oil, production, financial and quality charts are retained under More operational charts.
 - **HSE Actions:** the existing source records, simulated completion/verification workflow and site critical hold remain intact. Arroyo links open H019 and H020.
 
@@ -32,7 +32,7 @@ The secondary gallery’s January–March 2026 historical-baseline projections a
 
 ### Smart notes and request safety gates
 
-The Spare Parts page now starts with two compact working tools:
+The Overview page starts with Workbook History, followed by Smart note sorting and Safety gate, then the Inventory tracker. The two compact working tools are:
 
 - **Smart note sorting:** choose or type a technician note. The proposed lookup maps noise/vibration to Bearing kit, visible leak to Seal kit, protective trip/electrical panel to Electrical kit, changed feed conditions to No part, restart check, and unconfirmed cause to Inspect first. Unknown or conflicting notes also suggest inspection. These are advisory user-specified rules, not workbook inventory or a diagnosis. Suggestions never add stock or create orders.
 - **Safety gate:** Mesa, Arroyo and Prairie start on HOLD with two source-open severity-5 actions each. Requests can queue while held, but approval and receipt are blocked in both the interface and model. Only an HSE Supervisor demo verification with a recorded note can clear a critical action. Both actions must be verified before that site's requests unlock. Other sites and historical source totals stay unchanged. All actions are evaluated, regardless of filtering. HSE reset immediately relocks pending/approved requests; reload and same-origin tab changes refresh the gate.
@@ -53,7 +53,7 @@ When a site rule is enabled, stock changes and Check stock evaluate inventory po
 
 1. Open the landing page to show Arroyo’s historical evidence and the separate tracker.
 2. Open Dashboard: 40.0% of company parts wait, lowest source fill, monthly and asset comparisons, potential HSE severity and the labeled O4 scenario.
-3. Return to Spare Parts as Supervisor. Try demo defaults to Arroyo and creates one clearly simulated spare: stock 4, reorder point 2, target 8.
+3. Return to Overview as Supervisor. Try demo defaults to Arroyo and creates one clearly simulated spare: stock 4, reorder point 2, target 8.
 4. Issue 3 with a note. One pending request for 7 queues on HOLD; repeated checks create no duplicates.
 5. Use the safety card or HSE Actions to submit H019 for review, then verify using the HSE Supervisor demo role and a verification note. H020 keeps requests on HOLD until it is also verified.
 6. Once CLEAR, approve with a Supervisor note. Switch to Technician and record partial or full receipt with unique references. Receiving all 7 restores stock to 8.

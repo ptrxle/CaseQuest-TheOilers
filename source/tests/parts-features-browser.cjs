@@ -81,8 +81,8 @@ const RESULT = path.join(OUTPUT || __dirname, 'parts-features-verification.json'
   try {
     await page.goto(BASE);
     await page.waitForSelector('#sp-smart-note');
-    assert.equal(await page.locator('#page-title').innerText(), 'Spare Parts');
-    assert.deepEqual(await page.locator('#nav a span').allTextContents(), ['Spare Parts', 'Dashboard', 'HSE Actions']);
+    assert.equal(await page.locator('#page-title').innerText(), 'Overview');
+    assert.deepEqual(await page.locator('#nav a span').allTextContents(), ['Overview', 'Dashboard', 'HSE Actions']);
     const sourceBefore = await sourceSnapshot();
     assert.equal(await page.evaluate(() => PartsStore.getItems().length), 0);
     const initialStore = await storeSnapshot();

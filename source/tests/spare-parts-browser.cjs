@@ -19,9 +19,9 @@ const OUT = path.join(__dirname,'tracker-verification.json');
     await page.goto(BASE);
     await page.waitForSelector('.sp-tracker');
     await page.waitForFunction(() => current === 'parts' && state.site === 'S04');
-    assert.equal(await page.locator('#page-title').innerText(), 'Spare Parts');
+    assert.equal(await page.locator('#page-title').innerText(), 'Overview');
     assert.equal(await page.locator('#site-scope').inputValue(), 'S04');
-    assert.deepEqual(await page.locator('#nav a span').allTextContents(), ['Spare Parts', 'Dashboard', 'HSE Actions']);
+    assert.deepEqual(await page.locator('#nav a span').allTextContents(), ['Overview', 'Dashboard', 'HSE Actions']);
     const source = await data(() => JSON.stringify(DATA));
     assert.equal(await data(() => PartsStore.getItems().length), 0);
     assert.match(await page.locator('.sp-tracker-heading').innerText(), /Inventory tracker[\s\S]*Browser-local demo[\s\S]*separate from workbook history/);
@@ -32,12 +32,12 @@ const OUT = path.join(__dirname,'tracker-verification.json');
     assert.match(summary.text, /2025|historical/i);
     assert.equal(await page.locator('.sp-tracker-kpis .stat').count(), 4);
     assert.match(await page.locator('.sp-stock-summary').innerText(), /No demo stock records/);
-    checked('Spare Parts landing, Arroyo default, distinct historical and demo sections, honest empty tracker');
+    checked('Overview landing, Arroyo default, distinct historical and demo sections, honest empty tracker');
 
     for (const old of ['setup', 'access', 'downtime']) {
       await page.goto(BASE + '#' + old);
       await page.waitForFunction(() => current === 'parts');
-      assert.equal(await page.locator('#page-title').innerText(), 'Spare Parts');
+      assert.equal(await page.locator('#page-title').innerText(), 'Overview');
     }
     await page.click('#nav a[href="#dashboard"]');
     await page.waitForSelector('.af-dashboard');
@@ -236,7 +236,7 @@ const OUT = path.join(__dirname,'tracker-verification.json');
     assert.deepEqual(errors, []);
     checked('Guide navigation and 390px mobile tabs without document overflow');
     const result = { status: 'passed', baseURL: BASE, viewport: { desktop: '1600×1000', mobile: '390×844' }, checks,
-      landing: 'Spare Parts', defaultSite: 'Arroyo (S04)', navigation: ['Spare Parts', 'Dashboard', 'HSE Actions'],
+      landing: 'Overview', defaultSite: 'Arroyo (S04)', navigation: ['Overview', 'Dashboard', 'HSE Actions'],
       sourceUnchanged: true, resetSeparation: true, noDefaultInventory: true, pageErrors: errors };
     fs.mkdirSync(path.dirname(OUT), { recursive: true });
     fs.writeFileSync(OUT, JSON.stringify(result, null, 2));

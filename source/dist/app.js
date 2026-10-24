@@ -6,7 +6,7 @@ const PERMISSIONS = Object.freeze({
   Technician: {pages:['dashboard','parts','hse'],exports:[],finance:false},
   'HSE Supervisor': {pages:['dashboard','parts','hse'],exports:['hse'],finance:false}
 });
-const PAGES = [['parts','box','Spare Parts'],['dashboard','grid','Dashboard'],['hse','shield','HSE Actions']];
+const PAGES = [['parts','box','Overview'],['dashboard','grid','Dashboard'],['hse','shield','HSE Actions']];
 const STAGES = [['detect_hours','Detection'],['dispatch_hours','Dispatch'],['parts_wait_hours','Parts wait'],['repair_hours','Repair'],['restart_hours','Restart']];
 const PATHS={grid:'M3 3h6v6H3z M15 3h6v6h-6z M3 15h6v6H3z M15 15h6v6h-6z',shield:'M12 3l8 3v6c0 5-8 9-8 9s-8-4-8-9V6z M9 12l2 2 4-4',chart:'M4 3v17h17 M8 16v-5 M13 16V6 M18 16V9',box:'M3 7l9-4 9 4v10l-9 4-9-4z M3 7l9 4 9-4 M12 11v10',book:'M12 5C8 2 3 4 3 4v15s5-2 9 1c4-3 9-1 9-1V4s-5-2-9 1z M12 5v15',users:'M16 21v-3c0-3-8-3-8 0v3 M12 4a4 4 0 1 0 0 8 4 4 0 1 0 0-8 M3 18v-2c0-2 2-3 4-3 M21 18v-2c0-2-2-3-4-3',search:'M10 3a7 7 0 1 0 0 14 7 7 0 1 0 0-14 M15 15l6 6',info:'M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18 M12 11v6 M12 7v1',alert:'M12 3L2 21h20z M12 9v5 M12 17v1',check:'M4 12l5 5 11-11',download:'M12 3v12 M7 10l5 5 5-5 M4 17v4h16v-4'};
 const icon=n=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${PATHS[n]||PATHS.grid}"/></svg>`;
