@@ -1,64 +1,63 @@
-# Lone Mesa Energy · Spare Parts
+# Lone Mesa Energy · Arroyo-first Spare Parts
 
-The website has three main pages: **Dashboard**, **Spare Parts**, and **HSE Actions**. Spare Parts is the operational workflow. The attached version’s dashboard calculations, charts, HSE verification flow and shared design are preserved.
+**Spare Parts is the landing page. Arroyo is selected on a fresh visit.** The navigation contains only Spare Parts, Dashboard and HSE Actions. This update builds on the attached Lone-Mesa-Spare-Parts-Update version.
 
-## Spare-parts workflow
+## Pages
 
-Select a site or All sites. Inventory, orders and automation are views inside Spare Parts.
+- **Spare Parts:** an Arroyo-first historical dashboard above the working inventory tracker. Source evidence shows monthly parts waits, asset priorities and compact comparisons with the other five sites. The tracker includes stock status, request progress, inventory, orders and site automation.
+- **Dashboard:** a larger Arroyo spotlight explains the priority, compares all six sites, shows monthly waits and equipment groups, and displays potential HSE severity. The O4 card is explicitly a case scenario. Existing oil, production, financial and quality charts are retained under More operational charts.
+- **HSE Actions:** the existing source records, simulated completion/verification workflow and site critical hold remain intact. Arroyo links open H019 and H020.
 
-- **Supervisor:** add/edit parts and thresholds, enable site rules, approve/cancel requests, record issues/counts and receipts.
-- **Technician:** view inventory and orders, record stock issues/counts and receive approved requests.
-- **HSE Supervisor:** read-only spare-parts view; existing HSE demo verification remains available.
+The site selector changes the focus. All sites retains Arroyo as the historical spotlight while the inventory tracker totals all selected-site records; those scopes are labeled separately. Comparison charts always show all six sites. A site card selects that site. Explicit browser view choices are remembered for the session; a new session starts with Arroyo.
 
-The browser role selector is a demonstration, not authentication. Data persists in the same browser and origin. The offline file and hosted website have separate browser storage; records are not synchronized across devices.
+## What the evidence supports
 
-Automation runs when enabled, when relevant stock changes, and when Check stock is selected. Inventory position = on hand + outstanding quantities in pending, approved and partially received requests. When the position is at or below the reorder point, the request quantity is target stock minus inventory position. Each item has at most one open request. Requests require Supervisor approval; they are not supplier purchase orders. Partial receipts update stock and outstanding quantity. Receipt references prevent duplicate posting. Disabling automation stops new requests and leaves existing ones for review.
+2025 deduplicated unplanned records show Arroyo has 644.81 parts-wait equipment-hours, 38 affected events and 1,986.12 total stopped equipment-hours. Its share of company parts wait is 39.97%, displayed as 40.0%. Arroyo’s 42% source local fill is the lowest case planning input; it is not a measured live inventory balance.
 
-Unknown opening stock, thresholds, supplier and unit cost remain unavailable until explicitly entered. Zero is a valid known count. SKU uniqueness is enforced per site. Audit notes record demo roles and timestamps. Reset spare-parts data clears only inventory, requests, site rules and their activity; HSE demo state remains separate.
+The other-five simple mean is 193.702 parts-wait hours per site and 11.4 affected events per site. Average wait per affected event is 16.97 hours at Arroyo versus 16.99 hours across the other sites combined. The latter is combined hours divided by combined affected events, not an average of site averages. The evidence supports prioritizing frequent parts delays; it does not prove which SKU was missing or establish causality from spare fill.
 
-## Two-minute demonstration
+Asset and cause groupings identify where to investigate inventory needs. They are not a parts catalog. No actual SKUs, stock quantities, suppliers, reorder thresholds or purchase orders are supplied by the workbook.
 
-1. Open Spare Parts as Supervisor; select Mesa and choose Try demo.
-2. Create the clearly simulated spare: stock 4, reorder point 2, target 8. The site rule becomes enabled.
-3. Issue 3 with a simulated usage note. Stock becomes 1 and one request for 7 is created.
-4. Open Orders. Repeated Check stock clicks do not create duplicates.
-5. Open the request and approve it with a Supervisor note. No purchase is sent.
-6. Switch to Technician. Receive all 7, or record partial deliveries using unique references. Stock reaches 8 when all units arrive.
-7. Inspect other sites and Automation. Each site has independent rules and stock.
-8. Reset through Automation as Supervisor when finished.
+**Sources:** CaseQuest2026Dataset.xlsx, Assets, Events, HSE, Solutions, ReadMe and Dictionary. The independent `arroyo-focus-audit.json` retains source coordinates, deduplication checks, reconstructed durations and calculation inputs. `workbook-provenance.json` preserves the previous source-cleaning evidence. The workbook and `data.js` are unchanged.
 
-For HSE, open Mesa H007, submit a simulated note, then verify using a supervisor demo role and required verification note. H008 must also be verified before the critical hold clears. This is a prototype readiness gate, not an equipment control. Workbook status remains unchanged.
+## HSE and scenario boundaries
 
-## Evidence boundary
+HSE status is the October 1, 2026 source snapshot, separate from 2025 operating history. Potential severity describes a possible consequence, not a forecast of accidents. Dashboard HSE counts remain source counts after demo verification. H019/H020 demo updates stay separate from source status. A site’s demo hold remains active until all its critical open source actions have verified demo closures; it is not an equipment control.
 
-CaseQuest2026Dataset.xlsx is the only historical business-data source. Operations cover 2025; HSE status is the October 1, 2026 snapshot. The workbook supplies site spare-fill inputs and historical parts-wait hours, but no SKUs, stock quantities, reorder thresholds, suppliers, procurement orders or receipts. Inventory starts empty. Try demo creates clearly labeled simulated inputs only after the user chooses it.
+O4’s base case uses Solutions!S5: a 60% reduction in unplanned parts-wait hours. For Arroyo, 644.81 × 60% = 386.886 modeled hours avoided, leaving 257.924 parts-wait hours over a full comparable operating year after implementation. Other downtime stages and protected safety work stay unchanged. This is a scenario, not observed improvement, a guarantee, or a first-year cash-saving claim. The scenario drill-down shows supporting calculations and applicable O4 inputs; O4 option costs alone are not a complete rollout budget.
 
-Workbook evidence is available beneath each Spare Parts view. Company parts-wait exposure is 1,613.32 equipment-hours across 95 unplanned events; site-level fill rates are counted once per site and are not averaged into an unsupported company fill rate. References: Assets.spare_fill_pct and Events.parts_wait_hours. `spares-workbook-audit.json` documents the audit; `workbook-provenance.json` retains the original cleaning and lineage evidence. Historical parts expenses are not used as unit costs.
+The secondary gallery’s January–March 2026 historical-baseline projections are separate from the O4 case scenario. They use 2025 records without an intervention benefit. See `analytics-method.md`.
 
-Dashboard forecasts remain the attached version’s January–March 2026 historical-baseline estimates from 2025 records. They are not current data or quantified benefits of this spare-parts workflow. `analytics-method.md` gives the formulas and checks. Historical records, demo workflow updates and projections are separate.
+## Tracker and roles
 
-The workbook guide explains supported questions and navigates permitted views. It cannot submit supplier purchases, change permissions or operate equipment. Inventory/order export is not offered; workbook report exports contain historical site metrics.
+- **Supervisor:** configure parts and thresholds, enable site rules, approve/cancel requests, record issues/counts and receipts.
+- **Technician:** view stock, record issues/counts, and receive approved requests.
+- **HSE Supervisor:** read-only spare-parts access; the existing HSE demo review remains available.
 
-## Files and presentation
+Unknown values remain unavailable, distinct from zero. No demo inventory is created automatically. Demo roles are browser controls, not production authentication. Records are saved only in the same browser and origin. Hosted and offline copies do not share state.
 
-Open `Lone-Mesa-Energy.html` in the delivery package for the complete offline application. `source/dist` contains the editable website, which needs no build to serve. `images` contains exactly seven 3200 × 1800 PNGs in presentation order:
+When a site rule is enabled, stock changes and Check stock evaluate inventory position = on hand + outstanding pending/approved/partially received quantities. At or below the reorder point, a request is created for target stock minus inventory position. At most one open request exists per part. Supervisor approval is required; no supplier purchase is sent. Partial receipts update stock, and unique receipt references prevent duplicate posting.
 
-1. Dashboard — retained analytical overview.
-2. Parts delay by site — historical problem evidence.
-3. Site inventory — stock, reorder point and target.
-4. Site replenishment rules — separate automation per site.
-5. Automatic request review — the generated request and required approval.
-6. Receipt completed — technician receipt and request progress.
-7. HSE supervisor verification — separate safety workflow and critical hold.
+## Presentation walkthrough
 
-Demo screenshots show an explicitly simulated Mesa spare. No fabricated supplier, price or workbook inventory is presented.
+1. Open the landing page to show Arroyo’s historical evidence and the separate tracker.
+2. Open Dashboard: 40.0% of company parts wait, lowest source fill, monthly and asset comparisons, potential HSE severity and the labeled O4 scenario.
+3. Return to Spare Parts as Supervisor. Try demo defaults to Arroyo and creates one clearly simulated spare: stock 4, reorder point 2, target 8.
+4. Issue 3 with a note. One pending request for 7 is created; repeated checks create no duplicates.
+5. Approve with a Supervisor note. Switch to Technician and record partial or full receipt with unique references. Receiving all 7 restores stock to 8.
+6. In HSE Actions, submit H019 for review, then verify using a supervisor demo role and a verification note. H020 still keeps the critical hold active until it is also verified.
+7. Reset spare-parts demo through Automation and HSE demo through its details dialog. Each reset affects only its own simulated records.
 
-## Local development and validation
+## Deliverables
 
-Serve the `dist` directory with a static server, for example `python3 -m http.server 8765 --directory dist`. The `scripts` directory retains workbook extraction tools; review source and cleaning audits before replacing data.
+`Lone-Mesa-Energy.html` in the delivery package is the complete offline website. The `source` folder contains editable code. `images` contains seven actual website PNGs: landing page, full Arroyo dashboard, comparison/HSE/scenario detail, inventory tracker, automatic request review, technician receipt, and Arroyo HSE verification. Screenshots with inventory updates are explicitly simulated. The dashboard image is full-page; the comparison/HSE/scenario image is a focused capture for slide readability.
 
-Run `npm install` and install Playwright’s Chromium if needed. Start the static server, then run `npm test`. `TEST_URL` overrides the preview address and `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` selects a local browser. `npm run test:model` runs inventory model tests without a browser. The delivery verification reports record the tested environment and results.
+## Local development and verification
 
-## Deployment boundary
+Serve `dist` with a static web server, for example `python3 -m http.server 8765 --directory dist`. No build is required. Workbook extraction scripts remain available in `scripts`; validate any replacement workbook and its provenance before refreshing data.
 
-This is a presentation prototype with browser-local records. No shared inventory database, production authentication, supplier integration or unattended background process is connected. Production rollout needs those integrations and server-side authorization/audit storage. The historical workbook and HSE source records remain unchanged.
+Install the development dependencies and Playwright browser as needed. With the preview server running, `npm test` runs model, analytics and tracker checks. Set `TEST_URL` to another local preview and `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to a local Chromium/Chrome executable. `npm run test:model` needs no browser.
+
+Verification includes 91 new source comparisons, 126 existing analytics/projection comparisons, all six sites, 12 months, equipment groups, chart drill-downs, legacy chart controls, role guards, browser persistence, request/receipt handling, source immutability, the H019/H020 critical hold and mobile layout. Delivery reports record the results.
+
+This remains a presentation prototype. Production use requires authenticated identities, server-side permissions, shared inventory storage and audit records, and an actual supplier integration for procurement. No live inventory or background purchasing process is connected.

@@ -1,8 +1,10 @@
 {
   "status": "passed",
-  "offlineSelfContained": true,
-  "eagerInventoryLoaded": true,
-  "eventGuideAccess": true,
-  "unsupportedDemoExportsCorrect": true,
+  "selfContained": true,
+  "landing": "Spare Parts",
+  "defaultSite": "Arroyo",
+  "dashboard": true,
+  "drilldowns": true,
+  "HSELink": true,
   "pageErrors": []
 }

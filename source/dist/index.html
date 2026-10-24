@@ -3,25 +3,26 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Lone Mesa Energy: site spare-parts tracking, replenishment requests, operational dashboards and HSE actions.">
+  <meta name="description" content="Lone Mesa Energy: Arroyo-first spare-parts tracking, replenishment requests, site comparisons and HSE actions.">
   <meta name="color-scheme" content="light">
-  <title>Dashboard | Lone Mesa Energy</title>
+  <title>Spare Parts | Lone Mesa Energy</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2324558f'/%3E%3Cpath d='M9 8h15v4H13v4h9v4h-9v6H9z' fill='white'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="analytics.css">
   <link rel="stylesheet" href="hse-details.css">
   <link rel="stylesheet" href="spare-parts.css">
+  <link rel="stylesheet" href="arroyo-insights.css">
 </head>
 <body>
   <a class="sr-only skip-link" href="#main">Skip to content</a>
   <div class="shell">
     <aside class="sidebar">
-      <a href="#dashboard" class="brand" data-dashboard-home><span class="brand-logo">LM</span><strong>Lone Mesa Energy</strong></a>
+      <a href="#parts" class="brand" data-parts-home><span class="brand-logo">LM</span><strong>Lone Mesa Energy</strong></a>
       <nav id="nav" aria-label="Main navigation"></nav>
       <div class="profile-bottom"><div class="avatar" id="role-avatar">SV</div><div><label for="role">Demo role</label><select id="role"><option>Supervisor</option><option>Technician</option><option>HSE Supervisor</option></select></div></div>
     </aside>
     <div class="workspace">
-      <header class="topbar"><h1 id="page-title">Dashboard</h1><div class="top-actions">
+      <header class="topbar"><h1 id="page-title">Spare Parts</h1><div class="top-actions">
         <select id="site-scope" aria-label="Site"></select>
         <div class="search-wrap"><span id="search-icon"></span><input id="search" placeholder="Search parts, sites or actions" aria-label="Search parts, sites or actions" autocomplete="off"><div class="search-results" id="search-results" hidden></div></div>
         <button class="icon-btn" id="details" aria-label="Data source details"></button><button class="btn" id="primary-action" hidden></button>
@@ -32,5 +33,5 @@
   </div>
   <dialog id="modal"><div class="modal-head"><h2 id="modal-title"></h2><button class="icon-btn" id="close-modal" aria-label="Close dialog">×</button></div><div class="modal-body" id="modal-body"></div></dialog>
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
-  <script src="data.js"></script><script src="analytics-model.js"></script><script src="app.js"></script><script src="analytics-ui.js"></script><script src="spare-parts-model.js"></script><script src="spare-parts-ui.js"></script><script src="site-assistant.js"></script><script src="hse-demo.js"></script><script src="interactions.js"></script>
+  <script src="data.js"></script><script src="analytics-model.js"></script><script src="app.js"></script><script src="analytics-ui.js"></script><script src="spare-parts-model.js"></script><script src="arroyo-insights.js"></script><script src="spare-parts-ui.js"></script><script src="site-assistant.js"></script><script src="hse-demo.js"></script><script src="interactions.js"></script><script src="arroyo-focus-interactions.js"></script>
 </body></html>

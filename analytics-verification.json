@@ -1,31 +1,18 @@
 {
   "status": "passed",
-  "numericChecks": 126,
-  "chartViews": 8,
-  "roles": 3,
-  "scopes": 7,
-  "forecasts": 4,
-  "chatbot": true,
-  "mobile": true,
-  "threeNavigationItems": true,
-  "dashboardPixelIdentical": true,
-  "sourceFilesUnchanged": [
-    "data.js",
-    "analytics-model.js",
-    "analytics-ui.js",
-    "analytics.css",
-    "hse-demo.js",
-    "hse-details.css",
-    "styles.css"
-  ],
-  "fileHashes": {
-    "data.js": "d8f60cda4374477b9714f2984416aa8ddcf24651c551cac8218852a7c2c02516",
-    "analytics-model.js": "936dd829b41bc585cbb63d7b95681a235b14a0839310fdfd4f061732593a32bc",
-    "analytics-ui.js": "a16d836dd5daeb7d9e57e5a10a367b62b85e2bce70e7b14c38fd0e3a2e8f45b4",
-    "analytics.css": "64cd212c46e58fef4f09571d707f2f39ecb68f30cbdf2438c85dbd174fa5fc50",
-    "hse-demo.js": "c35d20dcfc1f493012fcf7af3573caa7f90b56bb893b1c35c0f6624b14330477",
-    "hse-details.css": "89ead07a9ea03da89c4d9e261be67822f50dc8bc193491fb2a1ee1d4b14ab78e",
-    "styles.css": "76ea9e316accb4966d97cb03f8009596ea7c8b7b0558ef95cd6692bc18fc7fa5"
+  "numeric": {
+    "focused": 91,
+    "legacy": 126,
+    "total": 217
   },
+  "sites": 6,
+  "months": 12,
+  "assetGroups": 3,
+  "sourceDrilldowns": 4,
+  "legacyCharts": 8,
+  "HSEActionLink": true,
+  "roleFinancialGuards": true,
+  "sourceUnchanged": true,
+  "mobile": true,
   "pageErrors": []
 }

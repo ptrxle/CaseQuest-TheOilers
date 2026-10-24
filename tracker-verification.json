@@ -1,0 +1,29 @@
+{
+  "status": "passed",
+  "baseURL": "http://127.0.0.1:8765/",
+  "viewport": {
+    "desktop": "1600×1000",
+    "mobile": "390×844"
+  },
+  "checks": [
+    "Spare Parts landing, Arroyo default, distinct historical and demo sections, honest empty tracker",
+    "Three-page navigation, removed-route fallback, and all tracker tabs",
+    "Arroyo Add/Try demo defaults, explicit other-site selection, and no default seeding",
+    "Technician issue 3 creates request 7; tracker updates; configuration and approval guarded",
+    "No duplicate requests; approval note required; partial/full receipts and over-receipt protection",
+    "Reload persistence, HSE read-only, cross-site modal isolation, unknown count distinct from zero",
+    "Arroyo H019/H020 two-action gate, supervisor notes, separate reset, workbook immutable",
+    "Guide navigation and 390px mobile tabs without document overflow"
+  ],
+  "landing": "Spare Parts",
+  "defaultSite": "Arroyo (S04)",
+  "navigation": [
+    "Spare Parts",
+    "Dashboard",
+    "HSE Actions"
+  ],
+  "sourceUnchanged": true,
+  "resetSeparation": true,
+  "noDefaultInventory": true,
+  "pageErrors": []
+}
