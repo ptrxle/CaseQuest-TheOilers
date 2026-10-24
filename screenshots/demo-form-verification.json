@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "checks": [
+    "All three roles share navigation, Add/Edit, rules and reset; prefill requires explicit submission, preserves cancel, and generates unique SKUs",
+    "Prefill respects the form site and selected valid asset; site changes choose a valid asset; All sites falls back to Arroyo",
+    "Mobile form works without overflow; reset removes simulated entries while workbook and critical hold remain unchanged"
+  ],
+  "sourceUnchanged": true,
+  "errors": []
+}

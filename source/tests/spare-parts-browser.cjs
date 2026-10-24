@@ -76,8 +76,8 @@ const OUT = path.join(__dirname,'tracker-verification.json');
 
     // Trigger replenishment with an actual technician stock movement.
     await page.selectOption('#role', 'Technician');
-    assert.equal(await page.locator('[data-sp-action="add"]').count(), 0);
-    assert.equal(await page.locator('[data-sp-action="demo"]').count(), 0);
+    assert.equal(await page.locator('[data-sp-action="add"]').count(), 1);
+    assert.equal(await page.locator('[data-sp-action="demo"]').count(), 1);
     await page.click('[data-sp-action="issue"]');
     await page.click('[data-sp-action="save-movement"]');
     assert.notEqual((await page.locator('#sp-error').innerText()).trim(), '');
@@ -90,13 +90,13 @@ const OUT = path.join(__dirname,'tracker-verification.json');
     assert.match(await page.locator('.sp-stock-meter').getAttribute('aria-label'), /Request open: 1/);
     assert.equal(await page.locator('.sp-request-counts > div').first().locator('strong').innerText(), '1');
     await tab('orders');
-    assert.equal(await page.locator('[data-sp-action="check"]').count(), 0);
+    assert.equal(await page.locator('[data-sp-action="check"]').count(), 1);
     await page.click('[data-sp-action="order"]');
-    assert.equal(await page.locator('[data-sp-action="approve"]').count(), 0);
-    assert.doesNotMatch(await page.locator('#modal-body').innerText(), /Unit cost|Request value/);
+    assert.equal(await page.locator('[data-sp-action="approve"]').isDisabled(), true);
+    assert.match(await page.locator('#modal-body').innerText(), /Unit cost[\s\S]*Request value/);
     await close();
-    assert.match(await data(() => { try { PartsStore.approve(PartsStore.getOrders('S04')[0].id, 'Forbidden technician approval'); return 'FAILED'; } catch (e) { return e.message; } }), /role/);
-    checked('Technician issue 3 creates request 7; tracker updates; configuration and approval guarded');
+    assert.match(await data(() => { try { PartsStore.approve(PartsStore.getOrders('S04')[0].id, 'Demo approval must honor site hold'); return 'FAILED'; } catch (e) { return e.message; } }), /Critical HSE hold/);
+    checked('Technician issue 3 creates request 7; shared controls and cost visibility; site hold guards approval');
 
     // The required critical HSE gate must clear before Supervisor request approval.
     await page.click('[data-sp-action="hse-action"][data-sp-id="H019"]');
@@ -154,16 +154,15 @@ const OUT = path.join(__dirname,'tracker-verification.json');
     assert.equal(await data(() => PartsStore.getOrders('S04')[0].status), 'Received');
     await page.selectOption('#role', 'HSE Supervisor');
     await tab('inventory');
-    assert.equal(await page.locator('[data-sp-action="issue"]').count(), 0);
-    assert.equal(await page.locator('[data-sp-action="count"]').count(), 0);
-    assert.equal(await page.locator('[data-sp-action="add"]').count(), 0);
+    assert.equal(await page.locator('[data-sp-action="issue"]').count(), 1);
+    assert.equal(await page.locator('[data-sp-action="count"]').count(), 1);
+    assert.equal(await page.locator('[data-sp-action="add"]').count(), 1);
     await page.click('[data-sp-action="item"]');
-    assert.equal(await page.locator('[data-sp-action="save-item"]').count(), 0);
+    assert.equal(await page.locator('[data-sp-action="save-item"]').count(), 1);
     await close();
     await tab('automation');
-    assert.equal(await page.locator('[data-sp-rule="S04"]').isDisabled(), true);
-    assert.equal(await page.locator('[data-sp-action="reset"]').count(), 0);
-    assert.match(await data(() => { try { PartsStore.issue(PartsStore.getItems('S04')[0].id, 1, 'Forbidden HSE movement'); return 'FAILED'; } catch (e) { return e.message; } }), /role/);
+    assert.equal(await page.locator('[data-sp-rule="S04"]').isDisabled(), false);
+    assert.equal(await page.locator('[data-sp-action="reset"]').count(), 1);
     await page.selectOption('#site-scope', 'S01');
     assert.equal(await data(() => SpareParts.openItem(PartsStore.getItems('S04')[0].id)), false);
     assert.equal(await data(() => SpareParts.openOrder(PartsStore.getOrders('S04')[0].id)), false);
@@ -179,7 +178,7 @@ const OUT = path.join(__dirname,'tracker-verification.json');
     assert.match(await page.locator('.sp-tracker-kpis').innerText(), /1 stock count missing/);
     assert.match(await page.locator('.sp-stock-meter').getAttribute('aria-label'), /Unconfigured: 1/);
     assert.equal(await data(() => PartsStore.getItems('S04')[0].on_hand), 8);
-    checked('Reload persistence, HSE read-only, cross-site modal isolation, unknown count distinct from zero');
+    checked('Reload persistence, HSE shared inventory controls, cross-site modal isolation, unknown count distinct from zero');
 
     // HSE demo state remains separate from inventory. Reset it before exercising both actions again.
     const sparesBefore = await data(() => JSON.stringify(PartsStore.snapshot()));

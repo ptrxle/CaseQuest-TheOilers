@@ -37,31 +37,31 @@ The Overview page starts with Workbook History, followed by Smart note sorting a
 - **Smart note sorting:** choose or type a technician note. The proposed lookup maps noise/vibration to Bearing kit, visible leak to Seal kit, protective trip/electrical panel to Electrical kit, changed feed conditions to No part, restart check, and unconfirmed cause to Inspect first. Unknown or conflicting notes also suggest inspection. These are advisory user-specified rules, not workbook inventory or a diagnosis. Suggestions never add stock or create orders.
 - **Safety gate:** Mesa, Arroyo and Prairie start on HOLD with two source-open severity-5 actions each. Requests can queue while held, but approval and receipt are blocked in both the interface and model. Only an HSE Supervisor demo verification with a recorded note can clear a critical action. Both actions must be verified before that site's requests unlock. Other sites and historical source totals stay unchanged. All actions are evaluated, regardless of filtering. HSE reset immediately relocks pending/approved requests; reload and same-origin tab changes refresh the gate.
 
-To demonstrate: pick an Arroyo technician note, create the sample spare and issue 3 units. Its request queues on HOLD. Open H019 and H020 from the safety card, submit simulated completion notes, and use the HSE Supervisor demo role to verify each. The first closure leaves HOLD; the second changes Arroyo to CLEAR. A Supervisor can then approve the request and a Technician can receive it. Mesa and Prairie remain held. Ordinary Supervisor closures from older demo versions require new HSE Supervisor verification for critical actions.
+To demonstrate: pick an Arroyo technician note, create the sample spare and issue 3 units. Its request queues on HOLD. Open H019 and H020 from the safety card, submit simulated completion notes, and use the HSE Supervisor demo role to verify each. The first closure leaves HOLD; the second changes Arroyo to CLEAR. Any demo role can then approve the request and record its receipt. Mesa and Prairie remain held. Ordinary Supervisor closures from older demo versions require new HSE Supervisor verification for critical actions.
 
 These remain browser-local prototype controls, not production authorization or equipment controls. Site rules do not send supplier purchases. The Workbook guide explains both features and reports current demo holds separately from source status.
 
-- **Supervisor:** configure parts and thresholds, enable site rules, approve/cancel requests, record issues/counts and receipts.
-- **Technician:** view stock, record issues/counts, and receive approved requests.
-- **HSE Supervisor:** read-only spare-parts access; the existing HSE demo review remains available.
+- **Shared presentation views:** Supervisor, Technician and HSE Supervisor have identical pages, charts, source details, exports and ordinary inventory controls. Each can configure parts and thresholds, enable site rules, approve/cancel requests, and record issues/counts and receipts.
+- **Critical HSE verification:** the HSE Supervisor demo role and a recorded verification note are still required to clear critical safety actions. The role selectors retain actor attribution and this specific workflow check.
+- **Quick entry:** Add part includes **Fill demo values**. It fills a clearly simulated example for review; it does not submit the form or create a record until the presenter chooses submit.
 
 Unknown values remain unavailable, distinct from zero. No demo inventory is created automatically. Demo roles are browser controls, not production authentication. Records are saved only in the same browser and origin. Hosted and offline copies do not share state.
 
-When a site rule is enabled, stock changes and Check stock evaluate inventory position = on hand + outstanding pending/approved/partially received quantities. At or below the reorder point, a request is created for target stock minus inventory position. At most one open request exists per part. Supervisor approval is required; no supplier purchase is sent. Partial receipts update stock, and unique receipt references prevent duplicate posting.
+When a site rule is enabled, stock changes and Check stock evaluate inventory position = on hand + outstanding pending/approved/partially received quantities. At or below the reorder point, a request is created for target stock minus inventory position. At most one open request exists per part. Explicit demo approval is required and is available to all three demo roles; no supplier purchase is sent. Partial receipts update stock, and unique receipt references prevent duplicate posting.
 
 ## Presentation walkthrough
 
 1. Open the landing page to show Arroyo’s historical evidence and the separate tracker.
 2. Open Dashboard: 40.0% of company parts wait, lowest source fill, monthly and asset comparisons, potential HSE severity and the labeled O4 scenario.
-3. Return to Overview as Supervisor. Try demo defaults to Arroyo and creates one clearly simulated spare: stock 4, reorder point 2, target 8.
+3. Return to Overview in any demo role. Add part > Fill demo values prepares a simulated example for review and submission. Try demo remains available and creates one clearly simulated spare: stock 4, reorder point 2, target 8.
 4. Issue 3 with a note. One pending request for 7 queues on HOLD; repeated checks create no duplicates.
 5. Use the safety card or HSE Actions to submit H019 for review, then verify using the HSE Supervisor demo role and a verification note. H020 keeps requests on HOLD until it is also verified.
-6. Once CLEAR, approve with a Supervisor note. Switch to Technician and record partial or full receipt with unique references. Receiving all 7 restores stock to 8.
+6. Once CLEAR, approve with a review note and record partial or full receipt with unique references. Any of the three demo roles can perform these ordinary inventory actions. Receiving all 7 restores stock to 8.
 7. Reset spare-parts demo through Automation and HSE demo through its details dialog. Each reset affects only its own simulated records.
 
 ## Deliverables
 
-`Lone-Mesa-Energy.html` in the delivery package is the complete offline website. The `source` folder contains editable code. `images` contains seven actual website PNGs: landing page, full Arroyo dashboard, comparison/HSE/scenario detail, inventory tracker, automatic request review, technician receipt, and Arroyo HSE verification. Screenshots with inventory updates are explicitly simulated. The dashboard image is full-page; the comparison/HSE/scenario image is a focused capture for slide readability.
+`Lone-Mesa-Energy.html` in the delivery package is the complete offline website. The `source` folder contains editable code. `screenshots/add-part-filled-demo.png` shows the new prefilled Add part form; the other feature screenshots show smart notes and safety gates. Any inventory and workflow updates shown are explicitly simulated. Verification reports are included alongside the screenshots.
 
 ## Local development and verification
 
@@ -69,6 +69,6 @@ Serve `dist` with a static web server, for example `python3 -m http.server 8765 
 
 Install the development dependencies and Playwright browser as needed. With the preview server running, `npm test` runs model, analytics and tracker checks. Set `TEST_URL` to another local preview and `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to a local Chromium/Chrome executable. `npm run test:model` needs no browser.
 
-Verification includes 91 new source comparisons, 126 existing analytics/projection comparisons, all six sites, 12 months, equipment groups, chart drill-downs, legacy chart controls, role guards, browser persistence, request/receipt handling, source immutability, the H019/H020 critical hold and mobile layout. Delivery reports record the results.
+Verification includes 91 new source comparisons, 126 existing analytics/projection comparisons, all six sites, 12 months, equipment groups, chart drill-downs, legacy chart controls, shared role views, critical HSE role checks, browser persistence, request/receipt handling, source immutability, the H019/H020 critical hold and mobile layout. Delivery reports record the results.
 
 This remains a presentation prototype. Production use requires authenticated identities, server-side permissions, shared inventory storage and audit records, and an actual supplier integration for procurement. No live inventory or background purchasing process is connected.

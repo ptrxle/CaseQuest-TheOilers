@@ -106,8 +106,9 @@
       if (!ROLES.includes(current) || !permissions.includes(current)) fail('This action is not available for your role.');
       return current;
     }
-    const supervisor = () => role(['Supervisor']);
-    const movement = () => role(['Supervisor', 'Technician']);
+    // All recognized demo roles share inventory controls; the HSE gate stays independent.
+    const editor = () => role(ROLES);
+    const movement = () => role(ROLES);
     function now() {
       const value = options.clock ? options.clock() : new Date();
       const d = new Date(value);
@@ -258,13 +259,13 @@
       getSafetyGate(siteId) { return clone(safetyGate(siteId)); },
       storageStatus: () => clone(status),
       addItem(input) {
-        const r = supervisor(), at = now();
+        const r = editor(), at = now();
         const i = normalizedItem(input); i.id = undefined; uniqueSKU(i); i.id = next('SPI-'); i.created_at = at;
         state.items.push(i); log('Part added', { site_id: i.site_id, item_id: i.id, notes: 'Browser-local demo record.' }, r, at);
         replenish(i.site_id, r, at, 'Inventory is at or below the reorder point.'); persist(); return clone(enrich(i));
       },
       updateItem(id, patch) {
-        const r = supervisor(), old = item(id), v = normalizedItem(patch, old); uniqueSKU(v);
+        const r = editor(), old = item(id), v = normalizedItem(patch, old); uniqueSKU(v);
         const changedCount = v.on_hand !== old.on_hand;
         const note = changedCount ? text(patch.notes || patch.note, 'Count change note', true) : text(patch.notes || patch.note, 'Change note');
         const at = now(); Object.assign(old, v);
@@ -285,26 +286,26 @@
         replenish(i.site_id, r, at, 'Recorded stock is at or below the reorder point.'); persist(); return clone(enrich(i));
       },
       setAutomation(siteId, enabled) {
-        const r = supervisor(); site(siteId); if (typeof enabled !== 'boolean') fail('Automation must be enabled or disabled.');
+        const r = editor(); site(siteId); if (typeof enabled !== 'boolean') fail('Automation must be enabled or disabled.');
         const at = now(); state.siteRules[siteId].enabled = enabled;
-        log(enabled ? 'Automation enabled' : 'Automation disabled', { site_id: siteId, notes: 'Demo requests require supervisor approval; no supplier is contacted.' }, r, at);
+        log(enabled ? 'Automation enabled' : 'Automation disabled', { site_id: siteId, notes: 'Demo requests require review and HSE clearance; no supplier is contacted.' }, r, at);
         if (enabled) replenish(siteId, r, at, 'Automation check: stock is at or below the reorder point.');
         persist(); return clone(state.siteRules[siteId]);
       },
       check(siteId = 'all') {
-        const r = supervisor(); scope(siteId); const at = now();
+        const r = editor(); scope(siteId); const at = now();
         const created = replenish(siteId, r, at, 'Manual check: stock is at or below the reorder point.');
         persist(); return { created: created.length, orders: clone(created.map(enrichOrder)) };
       },
       approve(id, note) {
-        const r = supervisor(), o = order(id), notes = text(note, 'Approval note', true);
+        const r = editor(), o = order(id), notes = text(note, 'Approval note', true);
         if (o.status !== 'Pending approval') fail('Only pending requests can be approved.');
         requireSafetyClear(o.site_id);
         const at = now(); o.status = 'Approved'; log('Request approved', { site_id: o.site_id, item_id: o.item_id, order_id: id, notes }, r, at);
         persist(); return clone(enrichOrder(o));
       },
       cancel(id, note) {
-        const r = supervisor(), o = order(id), notes = text(note, 'Cancellation note', true);
+        const r = editor(), o = order(id), notes = text(note, 'Cancellation note', true);
         if (!OPEN.includes(o.status)) fail('Only open requests can be cancelled.');
         const at = now(); o.status = 'Cancelled'; log('Request cancelled', { site_id: o.site_id, item_id: o.item_id, order_id: id, notes }, r, at);
         persist(); return clone(enrichOrder(o));
@@ -325,7 +326,7 @@
         replenish(o.site_id, r, at, 'Receipt check: stock is at or below the reorder point.'); persist(); return clone(enrichOrder(o));
       },
       seedDemo(siteId) {
-        const r = supervisor(); site(siteId);
+        const r = editor(); site(siteId);
         const at = now();
         let i = state.items.find(v => v.site_id === siteId && v.sku.toLocaleLowerCase() === 'demo-spare-01');
         if (!i) {
@@ -338,7 +339,7 @@
         replenish(siteId, r, at, 'Demo setup check: stock is at or below the reorder point.'); persist(); return clone(state);
       },
       reset() {
-        supervisor(); state = fresh(); sequence = 0; status.invalidData = false;
+        editor(); state = fresh(); sequence = 0; status.invalidData = false;
         if (storage) {
           try { storage.removeItem(KEY); status.available = true; status.mode = 'local'; status.error = ''; }
           catch (_) { status.available = false; status.mode = 'memory'; status.error = 'Browser storage could not be cleared. This session is reset; saved demo data may return after reload.'; }

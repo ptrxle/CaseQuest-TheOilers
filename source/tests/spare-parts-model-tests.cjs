@@ -82,15 +82,28 @@ test('exact demo flow, pending inventory position, duplicate request prevention,
   assert.equal(JSON.stringify({ sites, assets }), sourceBefore);
 });
 
-test('role enforcement lives in all mutation handlers', () => {
+test('all recognized demo roles share ordinary parts controls; unknown roles cannot mutate', () => {
+  for (const role of ['Supervisor', 'Technician', 'HSE Supervisor']) {
+    const f = fixture(), { store } = f; f.setRole(role);
+    const p = store.addItem({ site_id: 'S01', asset_id: 'A01', sku: 'SHARED', name: 'Demo part', on_hand: 4, reorder_point: 2, target_stock: 8 });
+    store.updateItem(p.id, { name: 'Updated demo part' });
+    store.setAutomation('S01', true); store.issue(p.id, 3, 'Demo repair');
+    assert.equal(store.check('S01').created, 0);
+    const o = store.getOrders()[0]; store.approve(o.id, 'Demo approval');
+    store.receive(o.id, 2, 'DEMO-RECEIPT'); store.cancel(o.id, 'Demo cancel remainder');
+    store.adjust(p.id, 4, 'Demo count'); store.setAutomation('S01', false);
+    store.seedDemo('S02'); assert.equal(store.getItems().length, 2);
+    assert.equal(store.getActivity().every(a => a.actor === 'Demo ' + role), true);
+    store.reset(); assert.equal(store.getItems().length, 0);
+  }
   const f = fixture(), { store } = f; store.seedDemo('S01'); const p = store.getItems()[0];
-  store.issue(p.id, 3, 'Repair'); const o = store.getOrders()[0];
-  f.setRole('Technician');
-  for (const action of [() => store.addItem({}), () => store.updateItem(p.id, {}), () => store.setAutomation('S01', false), () => store.check(), () => store.approve(o.id, 'ok'), () => store.cancel(o.id, 'no'), () => store.seedDemo('S02'), () => store.reset()]) throws(action, 'role');
-  f.setRole('HSE Supervisor');
-  for (const action of [() => store.issue(p.id, 1, 'x'), () => store.adjust(p.id, 2, 'x'), () => store.receive(o.id, 1, 'ref'), () => store.addItem({}), () => store.reset(), () => store.check()]) throws(action, 'role');
-  f.setRole('unrecognized'); throws(() => store.issue(p.id, 1, 'x'), 'role');
-  assert.equal(store.getItems().length, 1); assert.equal(store.getItems()[0].on_hand, 1);
+  store.issue(p.id, 3, 'Demo repair'); const o = store.getOrders()[0];
+  f.setRole('unrecognized'); const before = JSON.stringify(store.snapshot());
+  for (const action of [() => store.addItem({}), () => store.updateItem(p.id, {}),
+    () => store.setAutomation('S01', false), () => store.check(), () => store.approve(o.id, 'ok'),
+    () => store.cancel(o.id, 'no'), () => store.seedDemo('S02'), () => store.reset(),
+    () => store.issue(p.id, 1, 'x'), () => store.adjust(p.id, 2, 'x'), () => store.receive(o.id, 1, 'ref')]) throws(action, 'role');
+  assert.equal(JSON.stringify(store.snapshot()), before);
 });
 
 test('notes required; approved partial receipts, idempotency, bounds, and a new shortage', () => {
@@ -158,7 +171,7 @@ test('reset removes only this module and leaves source and separate demo state i
 
 test('critical safety gate keeps draft requests locked until every site action is verified', () => {
   let unresolved = 2;
-  const { store } = fixture(undefined, { getSafetyGate: siteId => ({ held: siteId === 'S01' && unresolved > 0, critical: siteId === 'S01' ? 2 : 0, unresolved: siteId === 'S01' ? unresolved : 0 }) });
+  const { store, setRole } = fixture(undefined, { getSafetyGate: siteId => ({ held: siteId === 'S01' && unresolved > 0, critical: siteId === 'S01' ? 2 : 0, unresolved: siteId === 'S01' ? unresolved : 0 }) });
   for (const siteId of ['S01', 'S02']) {
     store.seedDemo(siteId);
     store.issue(store.getItems(siteId)[0].id, 3, 'Simulated repair');
@@ -166,7 +179,9 @@ test('critical safety gate keeps draft requests locked until every site action i
   const heldOrder = store.getOrders('S01')[0], clearOrder = store.getOrders('S02')[0];
   assert.equal(heldOrder.status, 'Pending approval'); assert.equal(heldOrder.safety_hold, true); assert.equal(heldOrder.unresolved_critical, 2);
   const original = JSON.stringify(store.snapshot());
-  throws(() => store.approve(heldOrder.id, 'Reviewed'), 'Critical HSE hold');
+  for (const role of ['Supervisor', 'Technician', 'HSE Supervisor']) {
+    setRole(role); throws(() => store.approve(heldOrder.id, 'Reviewed'), 'Critical HSE hold');
+  }
   assert.equal(JSON.stringify(store.snapshot()), original);
   store.approve(clearOrder.id, 'Reviewed for other site'); assert.equal(store.getOrders('S02')[0].status, 'Approved');
   assert.equal(store.check('all').created, 0); assert.equal(store.getOrders('all').find(o => o.id === heldOrder.id).safety_hold, true);

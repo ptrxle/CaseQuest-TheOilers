@@ -8,7 +8,7 @@ window.HSEActionDetails = (() => {
   function record(id) { return DATA.hse.find(r => r.hse_id === id); }
   function isSourceClosed(r) { return String(r.action_status).trim().toLowerCase() === 'closed'; }
   function isCritical(r) { return Number(r.potential_severity) === 5; }
-  function reviewRole(r, role) { return isCritical(r) ? role === 'HSE Supervisor' : ['Supervisor','HSE Supervisor'].includes(role); }
+  function reviewRole(r, role) { return isCritical(r) ? role === 'HSE Supervisor' : ROLES.includes(role); }
   function validClosure(r, item) {
     const last = item.history.at(-1);
     return item.status === 'Verified closed' && last?.action === 'Verified closure' && reviewRole(r, last.actor) && !!last.note.trim() && Number.isFinite(Date.parse(last.time));
@@ -65,7 +65,7 @@ window.HSEActionDetails = (() => {
   function render() {
     const r = record(selectedId); if(!r || !allowed('hse') || !withinScope(r)) return false;
     const p = progress(r), sourceClosed = isSourceClosed(r), pending = p.status === 'Awaiting verification', verified = p.status === 'Verified closed';
-    const supervisor = reviewRole(r, demoRole), reviewerLabel = isCritical(r) ? 'HSE Supervisor' : 'Supervisor', d = drafts[r.hse_id] || {note:p.note || '', evidence:p.evidence || '', verification:''};
+    const supervisor = reviewRole(r, demoRole), reviewerLabel = isCritical(r) ? 'HSE Supervisor' : 'Demo reviewer', d = drafts[r.hse_id] || {note:p.note || '', evidence:p.evidence || '', verification:''};
     const records = DATA.hse.filter(x => state.site === 'all' || x.site_id === state.site);
     const history = [...p.history].reverse();
     const steps = statuses.map((s,i)=>`<li class="${!sourceClosed&&i<=statuses.indexOf(p.status)?'is-reached':''} ${s===p.status?'is-current':''}" ${s===p.status?'aria-current="step"':''}><span>${!sourceClosed&&i<statuses.indexOf(p.status)?'✓':i+1}</span>${esc(s)}</li>`).join('');
@@ -92,8 +92,8 @@ window.HSEActionDetails = (() => {
       status='Awaiting verification';label='Submitted for review';note=d.note.trim();
     }
     if((action === 'verify' || action === 'return') && p.status === 'Awaiting verification') {
-      if(!reviewRole(r,demoRole))return announce(isCritical(r)?'Only the HSE Supervisor demo role can verify or return critical safety actions.':'Only a supervisor demo role can review this action.');
-      if(!d.verification?.trim())return announce(isCritical(r)?'An HSE Supervisor verification note is required.':'A supervisor verification note is required.','hse-detail-verification');
+      if(!reviewRole(r,demoRole))return announce(isCritical(r)?'Only the HSE Supervisor demo role can verify or return critical safety actions.':'Choose a recognized demo role to review this action.');
+      if(!d.verification?.trim())return announce(isCritical(r)?'An HSE Supervisor verification note is required.':'A verification note is required.','hse-detail-verification');
       status=action==='verify'?'Verified closed':'In progress';label=action==='verify'?'Verified closure':'Returned for rework';note=d.verification.trim();
     }
     if(!status)return;
